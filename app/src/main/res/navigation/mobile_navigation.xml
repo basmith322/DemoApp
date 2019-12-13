@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_Perf">
+
+    <fragment
+        android:id="@+id/navigation_Perf"
+        android:name="com.example.demoapp.ui.performance.PerformanceFragment"
+        android:label="@string/title_Perf"
+        tools:layout="@layout/fragment_performance"/>
+
+    <fragment
+        android:id="@+id/navigation_Trip"
+        android:name="com.example.demoapp.ui.trip.TripFragment"
+        android:label="@string/title_Trip"
+        tools:layout="@layout/fragment_trip"/>
+
+    <fragment
+        android:id="@+id/navigation_Battery"
+        android:name="com.example.demoapp.ui.battery.BatteryFragment"
+        android:label="@string/title_Battery"
+        tools:layout="@layout/fragment_battery" />
+    <fragment
+        android:id="@+id/navigation_Temps"
+        android:name="com.example.demoapp.ui.temperatures.TemperaturesFragment"
+        android:label="@string/title_Temps"
+        tools:layout="@layout/fragment_temperatures" />
+    <fragment
+        android:id="@+id/navigation_Fuel"
+        android:name="com.example.demoapp.ui.consumption.ConsumptionFragment"
+        android:label="@string/title_Fuel"
+        tools:layout="@layout/fragment_consumption" />
+</navigation>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">DemoApp</string>
+    <string name="title_Perf">Performance</string>
+    <string name="title_Trip">Trip</string>
+    <string name="title_Battery">Battery</string>
+    <string name="title_Temps">Temperatures</string>
+    <string name="title_Fuel">Consumption</string>
+</resources>
