@@ -53,7 +53,7 @@ class BluetoothTestFragment : Fragment() {
         navBar.visibility = View.VISIBLE
     }
 
-    fun pairedDevices() {
+    private fun pairedDevices() {
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
         val deviceList = ArrayList<String>()
         pairedDevices?.forEach { device ->
