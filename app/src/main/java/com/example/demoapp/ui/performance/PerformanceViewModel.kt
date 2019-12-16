@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 
 class PerformanceViewModel : ViewModel() {
 
-    val randomMph = (0..130).random()
-    val randomRPM = (600..6000).random()
-    val randomPSI = (0..300).random()
-    val randomMaxSpeed = (60..200).random()
+    private val randomMph = (0..130).random()
+    private val randomRPM = (600..6000).random()
+    private val randomPSI = (0..300).random()
+    private val randomMaxSpeed = (60..200).random()
 
     //Current Speed
     private val _textCurrentSpeedTitle = MutableLiveData<String>().apply {

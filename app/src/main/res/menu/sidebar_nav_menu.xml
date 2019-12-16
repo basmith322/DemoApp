@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_Perf"
             android:icon="@drawable/ic_speed_24px"
@@ -26,4 +27,12 @@
             android:id="@+id/navigation_Fuel"
             android:icon="@drawable/ic_local_gas_station_black_24dp"
             android:title="@string/title_Fuel" />
+    </group>
+    <item android:title="@string/extras">
+        <menu>
+            <item
+                android:id="@+id/navigation_Bluetooth"
+                android:title="@string/title_bluetooth" />
+        </menu>
+    </item>
 </menu>

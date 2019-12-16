@@ -32,4 +32,9 @@
         android:name="com.example.demoapp.ui.consumption.ConsumptionFragment"
         android:label="@string/title_Fuel"
         tools:layout="@layout/fragment_consumption" />
+    <fragment
+        android:id="@+id/navigation_Bluetooth"
+        android:name="com.example.demoapp.ui.bluetooth.BluetoothTestFragment"
+        android:label="@string/title_bluetooth"
+        tools:layout="@layout/fragment_bluetooth_test" />
 </navigation>

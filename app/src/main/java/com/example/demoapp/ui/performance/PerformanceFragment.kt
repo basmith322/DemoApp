@@ -1,5 +1,6 @@
 package com.example.demoapp.ui.performance
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -17,10 +18,11 @@ class PerformanceFragment : Fragment() {
 
     private lateinit var performanceViewModel: PerformanceViewModel
     private val totalTime: Long = 999999999
-    private var countDownInterval: kotlin.Long = 150
+    private var countDownInterval: Long = 150
     private lateinit var timer: CountDownTimer
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
