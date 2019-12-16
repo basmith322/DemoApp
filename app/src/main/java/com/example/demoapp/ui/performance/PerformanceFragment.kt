@@ -17,7 +17,7 @@ class PerformanceFragment : Fragment() {
 
     private lateinit var performanceViewModel: PerformanceViewModel
     private val totalTime: Long = 999999999
-    private var countDownInterval: kotlin.Long = 300
+    private var countDownInterval: kotlin.Long = 150
     private lateinit var timer: CountDownTimer
 
 

@@ -5,6 +5,9 @@
     <string name="title_Battery">Battery</string>
     <string name="title_Temps">Temperatures</string>
     <string name="title_Fuel">Consumption</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">Digital Car Dashboard</string>
+    <string name="nav_header_subtitle">smith-b9@ulster.ac.uk</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
