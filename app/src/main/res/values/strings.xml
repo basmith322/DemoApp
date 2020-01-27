@@ -14,4 +14,13 @@
     <string name="btn_refresh_text">Refresh</string>
     <string name="title_bluetooth">Bluetooth</string>
     <string name="extras">Extras</string>
+    <string name="txtRegister">Welcome. Please Register to Continue</string>
+    <string name="hintEmail">Enter Email</string>
+    <string name="btnRegister">Register</string>
+    <string name="txtRegLogin">Already Registered? Login Here</string>
+    <string name="hintPassword">Enter Password</string>
+    <string name="txtLogin">Welcome. Please Login to Continue</string>
+    <string name="btnLogin">Login</string>
+    <string name="txtLoginReg">Don\'t have an account? Signup Here</string>
+    <string name="txtNoNetwork">There is currnently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
 </resources>
