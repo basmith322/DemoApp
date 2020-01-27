@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -12,6 +13,7 @@ import android.widget.Toast
 import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.Utilities.CloseKeyboard
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 
@@ -22,6 +24,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
 
         //Validation check to ensure app is connected to network
         if (isConnectedToNetwork()) {

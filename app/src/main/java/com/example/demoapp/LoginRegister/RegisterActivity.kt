@@ -70,4 +70,8 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
     }
+
+    fun goLogin(view: View) {
+        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+    }
 }
