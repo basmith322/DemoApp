@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BluetoothTestFragment : Fragment() {
     private var bluetoothAdapter: BluetoothAdapter? = null
-    private val REQUEST_ENABLE_BT = 1
+    private val requestEnableBlueTooth = 1
     private lateinit var btnRefresh: Button
     private lateinit var navBar: BottomNavigationView
 
@@ -39,7 +39,7 @@ class BluetoothTestFragment : Fragment() {
 
         if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+            startActivityForResult(enableBtIntent, requestEnableBlueTooth)
         }
 
         btnRefresh = root.findViewById(R.id.select_device_refresh)

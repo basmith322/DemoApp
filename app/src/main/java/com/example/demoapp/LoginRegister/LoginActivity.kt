@@ -3,17 +3,16 @@ package com.example.demoapp.LoginRegister
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.Utilities.CloseKeyboard
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 
@@ -49,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     //Perform validation check if there are email and password strings. Email and Password formatting are handled by Firebase.
-    fun getLoginValidationError(email: String, password: String): String? {
+    private fun getLoginValidationError(email: String, password: String): String? {
         if (email == "") {
             return "Please enter a valid email address"
         }
