@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 
 class TripFragment : Fragment() {
@@ -20,7 +20,7 @@ class TripFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         tripViewModel =
-            ViewModelProviders.of(this).get(TripViewModel::class.java)
+            ViewModelProvider(this).get(TripViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_trip, container, false)
         val textView: TextView = root.findViewById(R.id.text_trip)
         tripViewModel.text.observe(this, Observer {

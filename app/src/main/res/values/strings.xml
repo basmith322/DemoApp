@@ -23,4 +23,6 @@
     <string name="btnLogin">Login</string>
     <string name="txtLoginReg">Don\'t have an account? Signup Here</string>
     <string name="txtNoNetwork">There is currnently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
+    <string name="button_Discover">Discover</string>
+    <string name="signout">Sign Out</string>
 </resources>

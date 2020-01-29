@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 import kotlinx.android.synthetic.main.fragment_performance.*
 
@@ -30,7 +30,7 @@ class PerformanceFragment : Fragment() {
     ): View? {
         startCounter(view)
         performanceViewModel =
-            ViewModelProviders.of(this).get(PerformanceViewModel::class.java)
+            ViewModelProvider(this).get(PerformanceViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_performance, container, false)
 
         //Current Speed

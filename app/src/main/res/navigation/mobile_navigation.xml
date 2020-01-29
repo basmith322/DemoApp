@@ -36,4 +36,9 @@
         android:name="com.example.demoapp.ui.bluetooth.BluetoothTestFragment"
         android:label="@string/title_bluetooth"
         tools:layout="@layout/fragment_bluetooth_test" />
+    <fragment
+        android:id="@+id/signOutFragment"
+        android:name="com.example.demoapp.userauth.SignOutFragment"
+        android:label="sign_out_fragment"
+        tools:layout="@layout/sign_out_fragment" />
 </navigation>

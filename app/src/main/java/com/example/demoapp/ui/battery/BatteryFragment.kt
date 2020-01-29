@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 
 class BatteryFragment : Fragment() {
@@ -20,7 +20,7 @@ class BatteryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         batteryViewModel =
-            ViewModelProviders.of(this).get(BatteryViewModel::class.java)
+            ViewModelProvider(this).get(BatteryViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_battery, container, false)
         val textView: TextView = root.findViewById(R.id.text_battery)
         batteryViewModel.text.observe(this, Observer {

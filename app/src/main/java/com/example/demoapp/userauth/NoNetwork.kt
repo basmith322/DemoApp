@@ -1,4 +1,4 @@
-package com.example.demoapp.LoginRegister
+package com.example.demoapp.userauth
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

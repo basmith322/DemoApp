@@ -1,4 +1,4 @@
-package com.example.demoapp.LoginRegister
+package com.example.demoapp.userauth
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.demoapp.MainActivity
 import com.example.demoapp.R
-import com.example.demoapp.Utilities.CloseKeyboard
+import com.example.demoapp.utilities.CloseKeyboard
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 

@@ -19,6 +19,7 @@ class BluetoothTestFragment : Fragment() {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private val requestEnableBlueTooth = 1
     private lateinit var btnRefresh: Button
+    private lateinit var btnDiscover: Button
     private lateinit var navBar: BottomNavigationView
 
     override fun onCreateView(
@@ -28,6 +29,7 @@ class BluetoothTestFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
+
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
 
@@ -42,15 +44,20 @@ class BluetoothTestFragment : Fragment() {
             startActivityForResult(enableBtIntent, requestEnableBlueTooth)
         }
 
-        btnRefresh = root.findViewById(R.id.select_device_refresh)
-        btnRefresh.setOnClickListener{pairedDevices()}
+        btnRefresh = root.findViewById(R.id.btnRefresh)
+        btnRefresh.setOnClickListener { pairedDevices() }
+        btnDiscover = root.findViewById(R.id.btnDiscover)
+        btnDiscover.setOnClickListener { discover() }
         return root
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
+    }
+
+    private fun discover() {
+        bluetoothAdapter?.startDiscovery()
     }
 
     private fun pairedDevices() {
