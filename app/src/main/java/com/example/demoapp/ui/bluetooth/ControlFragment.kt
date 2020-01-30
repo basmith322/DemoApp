@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.demoapp.R
 
@@ -22,6 +23,8 @@ class ControlFragment : Fragment() {
 
         val data: Bundle? = arguments
 
+        val deviceName: TextView = root.findViewById(R.id.textView_DeviceName)
+        deviceName.text = data!!.get(String()).toString()
         val deviceListView: ListView = root.findViewById(R.id.list_Devices)
         val deviceList = data!!.getStringArrayList("deviceName")
         val listItems = arrayOfNulls<String>(deviceList!!.size)

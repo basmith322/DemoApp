@@ -2,7 +2,10 @@ package com.example.demoapp.ui.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BluetoothTestFragment : Fragment() {
     private var bluetoothAdapter: BluetoothAdapter? = null
-    private val requestEnableBlueTooth = 1
+    private val REQUEST_ENABLE_BT = 1
     private lateinit var btnRefresh: Button
     private lateinit var btnDiscover: Button
     private lateinit var navBar: BottomNavigationView
@@ -34,30 +37,51 @@ class BluetoothTestFragment : Fragment() {
         navBar.visibility = View.GONE
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
         if (bluetoothAdapter == null) {
-            Toast.makeText(context, "This Device doesn't support Bluetooth", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG).show()
         }
 
         if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, requestEnableBlueTooth)
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
+
+        if ((bluetoothAdapter?.isDiscovering!!)) {
+            bluetoothAdapter!!.cancelDiscovery()
+        }
+        bluetoothAdapter!!.startDiscovery()
+
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        context!!.registerReceiver(receiver, filter)
 
         btnRefresh = root.findViewById(R.id.btnRefresh)
         btnRefresh.setOnClickListener { pairedDevices() }
         btnDiscover = root.findViewById(R.id.btnDiscover)
-        btnDiscover.setOnClickListener { discover() }
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
+        bluetoothAdapter?.cancelDiscovery()
+
     }
 
-    private fun discover() {
-        bluetoothAdapter?.startDiscovery()
+    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    val deviceName = device.name
+                    val deviceHardwareAddress = device.address // MAC address
+                    Toast.makeText(context,deviceName,Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun pairedDevices() {
