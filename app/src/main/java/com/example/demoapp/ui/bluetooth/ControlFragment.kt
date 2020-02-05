@@ -26,7 +26,7 @@ class ControlFragment : Fragment() {
         val deviceName: TextView = root.findViewById(R.id.textView_DeviceName)
         deviceName.text = data!!.get(String()).toString()
         val deviceListView: ListView = root.findViewById(R.id.list_Devices)
-        val deviceList = data!!.getStringArrayList("deviceName")
+        val deviceList = data.getStringArrayList("deviceName")
         val listItems = arrayOfNulls<String>(deviceList!!.size)
 
         for (i in 0 until deviceList.size) {
