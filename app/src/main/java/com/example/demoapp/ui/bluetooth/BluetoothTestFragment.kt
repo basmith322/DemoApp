@@ -23,6 +23,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 import kotlin.collections.ArrayList
+
 const val MESSAGE_READ: Int = 0
 const val MESSAGE_WRITE: Int = 1
 const val MESSAGE_TOAST: Int = 2
@@ -43,12 +44,10 @@ class BluetoothTestFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
-
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
         if (bluetoothAdapter == null) {
             Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
                 .show()
@@ -61,13 +60,7 @@ class BluetoothTestFragment : Fragment() {
 
         btnRefresh = root.findViewById(R.id.btnRefresh)
         btnRefresh.setOnClickListener { pairedDevices() }
-        btnDiscover = root.findViewById(R.id.btnDiscover)
         return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        navBar.visibility = View.VISIBLE
     }
 
     private fun pairedDevices() {
@@ -87,7 +80,6 @@ class BluetoothTestFragment : Fragment() {
     }
 
     private inner class AcceptThread : Thread() {
-
         private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
             bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord("test", MY_UUID)
         }
@@ -111,6 +103,10 @@ class BluetoothTestFragment : Fragment() {
             }
         }
 
+        private fun manageMyConnectedSocket(it: BluetoothSocket) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
         // Closes the connect socket and causes the thread to finish.
         fun cancel() {
             try {
@@ -120,70 +116,10 @@ class BluetoothTestFragment : Fragment() {
             }
         }
     }
-}
 
-class MyBluetoothService(
-    // handler that gets info from Bluetooth service
-    private val handler: Handler
-) {
-
-    private inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
-
-        private val mmInStream: InputStream = mmSocket.inputStream
-        private val mmOutStream: OutputStream = mmSocket.outputStream
-        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
-
-        override fun run() {
-            var numBytes: Int // bytes returned from read()
-
-            // Keep listening to the InputStream until an exception occurs.
-            while (true) {
-                // Read from the InputStream.
-                numBytes = try {
-                    mmInStream.read(mmBuffer)
-                } catch (e: IOException) {
-                    Log.d(TAG, "Input stream was disconnected", e)
-                    break
-                }
-
-                // Send the obtained bytes to the UI activity.
-                val readMsg = handler.obtainMessage(
-                    MESSAGE_READ, numBytes, -1,
-                    mmBuffer)
-                readMsg.sendToTarget()
-            }
-        }
-
-        // Call this from the main activity to send data to the remote device.
-        fun write(bytes: ByteArray) {
-            try {
-                mmOutStream.write(bytes)
-            } catch (e: IOException) {
-                Log.e(TAG, "Error occurred when sending data", e)
-
-                // Send a failure message back to the activity.
-                val writeErrorMsg = handler.obtainMessage(MESSAGE_TOAST)
-                val bundle = Bundle().apply {
-                    putString("toast", "Couldn't send data to the other device")
-                }
-                writeErrorMsg.data = bundle
-                handler.sendMessage(writeErrorMsg)
-                return
-            }
-
-            // Share the sent message with the UI activity.
-            val writtenMsg = handler.obtainMessage(
-                MESSAGE_WRITE, -1, -1, mmBuffer)
-            writtenMsg.sendToTarget()
-        }
-
-        // Call this method from the main activity to shut down the connection.
-        fun cancel() {
-            try {
-                mmSocket.close()
-            } catch (e: IOException) {
-                Log.e(TAG, "Could not close the connect socket", e)
-            }
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        navBar.visibility = View.VISIBLE
+        AcceptThread().cancel()
     }
 }
