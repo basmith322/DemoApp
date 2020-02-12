@@ -23,7 +23,7 @@ class TemperaturesFragment : Fragment() {
             ViewModelProvider(this).get(TemperaturesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_temperatures, container, false)
         val textView: TextView = root.findViewById(R.id.text_temperatures)
-        temperaturesViewModel.text.observe(this, Observer {
+        temperaturesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

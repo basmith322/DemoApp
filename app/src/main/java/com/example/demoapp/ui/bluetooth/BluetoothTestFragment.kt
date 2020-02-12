@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +18,6 @@ import androidx.fragment.app.FragmentManager
 import com.example.demoapp.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,7 +27,6 @@ const val MESSAGE_TOAST: Int = 2
 
 class BluetoothTestFragment : Fragment() {
     private var bluetoothAdapter: BluetoothAdapter? = null
-    private var socket: BluetoothSocket? = null
     private val REQUEST_ENABLE_BT = 1
     private val MY_UUID: UUID = UUID.fromString("cab49be8-9b26-4e62-8c78-7d1d8efe279e")
     private lateinit var btnRefresh: Button
@@ -60,6 +56,11 @@ class BluetoothTestFragment : Fragment() {
 
         btnRefresh = root.findViewById(R.id.btnRefresh)
         btnRefresh.setOnClickListener { pairedDevices() }
+        btnDiscover = root.findViewById(R.id.btnDiscover)
+        val arr = byteArrayOf(0x2E)
+//        btnDiscover.setOnClickListener {
+//            MyBluetoothService(handler).ConnectedThread(mmSocket).write(arr)
+//        }
         return root
     }
 

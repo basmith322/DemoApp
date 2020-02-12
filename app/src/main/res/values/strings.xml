@@ -25,4 +25,8 @@
     <string name="txtNoNetwork">There is currnently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
     <string name="button_Discover">Discover</string>
     <string name="signout">Sign Out</string>
+    <string name="txtLogging">Welcome to Trip Logging</string>
+    <string name="btnLogging">Log Trip Data</string>
+    <string name="txtOptions">Additional</string>
+    <string name="btnRetrieveLog">Retrieve Logs</string>
 </resources>

@@ -23,7 +23,7 @@ class TripFragment : Fragment() {
             ViewModelProvider(this).get(TripViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_trip, container, false)
         val textView: TextView = root.findViewById(R.id.text_trip)
-        tripViewModel.text.observe(this, Observer {
+        tripViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

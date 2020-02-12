@@ -1,8 +1,11 @@
 package com.example.demoapp.ui.performance
 
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.demoapp.ui.trip.LoggingActivity
 
 class PerformanceViewModel : ViewModel() {
 

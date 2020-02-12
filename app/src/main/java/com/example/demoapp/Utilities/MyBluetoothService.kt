@@ -1,3 +1,5 @@
+package com.example.demoapp.utilities
+
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +16,7 @@ class MyBluetoothService(
     // handler that gets info from Bluetooth service
     private val handler: Handler
 ) {
-    private inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+     inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
 
         private val mmInStream: InputStream = mmSocket.inputStream
         private val mmOutStream: OutputStream = mmSocket.outputStream

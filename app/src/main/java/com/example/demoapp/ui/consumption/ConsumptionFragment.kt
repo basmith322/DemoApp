@@ -23,7 +23,7 @@ class ConsumptionFragment : Fragment() {
             ViewModelProvider(this).get(ConsumptionViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_consumption, container, false)
         val textView: TextView = root.findViewById(R.id.text_consumption)
-        consumptionViewModel.text.observe(this, Observer {
+        consumptionViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.performance
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
+import com.example.demoapp.ui.trip.LoggingActivity
+import com.example.demoapp.ui.trip.TripFragment
 import kotlinx.android.synthetic.main.fragment_performance.*
 
 
@@ -35,54 +38,54 @@ class PerformanceFragment : Fragment() {
 
         //Current Speed
         val textCurrentSpeed: TextView = root.findViewById(R.id.text_CurrentSpeedTitle)
-        performanceViewModel.textCurrentSpeedTitle.observe(this, Observer {
+        performanceViewModel.textCurrentSpeedTitle.observe(viewLifecycleOwner, Observer {
             textCurrentSpeed.text = it
         })
         val textCurrentSpeedMph: TextView = root.findViewById(R.id.text_CurrentSpeed)
-        performanceViewModel.textCurrentSpeed.observe(this, Observer {
+        performanceViewModel.textCurrentSpeed.observe(viewLifecycleOwner, Observer {
             textCurrentSpeedMph.text = "$it Mph"
         })
 
         //Current RPM
         val textCurrentRPM: TextView = root.findViewById(R.id.text_RPMTitle)
-        performanceViewModel.textRPMTitle.observe(this, Observer {
+        performanceViewModel.textRPMTitle.observe(viewLifecycleOwner, Observer {
             textCurrentRPM.text = it
         })
         val textRPM: TextView = root.findViewById(R.id.text_RPM)
-        performanceViewModel.textRPM.observe(this, Observer {
+        performanceViewModel.textRPM.observe(viewLifecycleOwner, Observer {
             textRPM.text = "$it RPM"
         })
 
         //Boost Pressure
         val textPSITitle: TextView = root.findViewById(R.id.text_PSITitle)
-        performanceViewModel.textPSITitle.observe(this, Observer {
+        performanceViewModel.textPSITitle.observe(viewLifecycleOwner, Observer {
             textPSITitle.text = it
         })
         val textPSI: TextView = root.findViewById(R.id.text_PSI)
-        performanceViewModel.textPSI.observe(this, Observer {
+        performanceViewModel.textPSI.observe(viewLifecycleOwner, Observer {
             textPSI.text = "$it PSI"
         })
 
         //Avg Speed
         val textAvgSpeedTitle: TextView = root.findViewById(R.id.text_AvgSpeedTitle)
-        performanceViewModel.textAvgSpeedTitle.observe(this, Observer {
+        performanceViewModel.textAvgSpeedTitle.observe(viewLifecycleOwner, Observer {
             textAvgSpeedTitle.text = it
         })
         val textAvgSpeed: TextView = root.findViewById(R.id.text_AvgSpeed)
-        performanceViewModel.textAvgSpeed.observe(this, Observer {
+        performanceViewModel.textAvgSpeed.observe(viewLifecycleOwner, Observer {
             textAvgSpeed.text = "${it}Mph"
         })
 
         //Max Speed
         val textMaxSpeedTitle: TextView = root.findViewById(R.id.text_MaxSpeedTitle)
-        performanceViewModel.textMaxSpeedTitle.observe(this, Observer {
+        performanceViewModel.textMaxSpeedTitle.observe(viewLifecycleOwner, Observer {
             textMaxSpeedTitle.text = it
         })
         val textMaxSpeed: TextView = root.findViewById(R.id.text_MaxSpeed)
-        performanceViewModel.textMaxSpeed.observe(this, Observer {
+        performanceViewModel.textMaxSpeed.observe(viewLifecycleOwner, Observer {
             textMaxSpeed.text = "${it}Mph"
-        })
 
+        })
         return root
     }
 
