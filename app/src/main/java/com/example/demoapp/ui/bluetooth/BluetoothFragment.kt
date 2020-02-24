@@ -2,17 +2,17 @@ package com.example.demoapp.ui.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.se.omapi.SEService.OnConnectedListener
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.demoapp.R
@@ -21,16 +21,13 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-const val MESSAGE_READ: Int = 0
-const val MESSAGE_WRITE: Int = 1
-const val MESSAGE_TOAST: Int = 2
+
+private const val REQUEST_ENABLE_BT = 1
+val MY_UUID: UUID = UUID.fromString("cab49be8-9b26-4e62-8c78-7d1d8efe279e")
 
 class BluetoothTestFragment : Fragment() {
-    private var bluetoothAdapter: BluetoothAdapter? = null
-    private val REQUEST_ENABLE_BT = 1
-    private val MY_UUID: UUID = UUID.fromString("cab49be8-9b26-4e62-8c78-7d1d8efe279e")
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnRefresh: Button
-    private lateinit var btnDiscover: Button
     private lateinit var navBar: BottomNavigationView
 
     override fun onCreateView(
@@ -43,7 +40,7 @@ class BluetoothTestFragment : Fragment() {
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        //region bluetooth adapter code
         if (bluetoothAdapter == null) {
             Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
                 .show()
@@ -53,17 +50,16 @@ class BluetoothTestFragment : Fragment() {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
+        //endregion
 
+        //region button on click listeners
         btnRefresh = root.findViewById(R.id.btnRefresh)
         btnRefresh.setOnClickListener { pairedDevices() }
-        btnDiscover = root.findViewById(R.id.btnDiscover)
-        val arr = byteArrayOf(0x2E)
-//        btnDiscover.setOnClickListener {
-//            MyBluetoothService(handler).ConnectedThread(mmSocket).write(arr)
-//        }
+        //endregion
         return root
     }
 
+    /*function to list all paired devices*/
     private fun pairedDevices() {
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
         val deviceList = ArrayList<String>()
@@ -74,46 +70,43 @@ class BluetoothTestFragment : Fragment() {
             data.putStringArrayList("deviceName", deviceList)
 
             val fragment: Fragment = ControlFragment()
-            val fragmentManager: FragmentManager? = fragmentManager
+            val fragmentManager: FragmentManager? = parentFragmentManager
             fragment.arguments = data
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
         }
     }
 
-    private inner class AcceptThread : Thread() {
-        private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord("test", MY_UUID)
+    private inner class ConnectThread(device: BluetoothDevice) : Thread() {
+        private val listener: OnConnectedListener? = null
+        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            device.createRfcommSocketToServiceRecord(MY_UUID)
         }
 
         override fun run() {
-            // Keep listening until exception occurs or a socket is returned.
-            var shouldLoop = true
-            while (shouldLoop) {
-                val socket: BluetoothSocket? = try {
-                    mmServerSocket?.accept()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Socket's accept() method failed", e)
-                    shouldLoop = false
-                    null
-                }
-                socket?.also {
-                    manageMyConnectedSocket(it)
-                    mmServerSocket?.close()
-                    shouldLoop = false
-                }
+            // Cancel discovery because it otherwise slows down the connection.
+            bluetoothAdapter?.cancelDiscovery()
+
+            mmSocket?.use { socket ->
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                socket.connect()
+
+                // The connection attempt succeeded. Perform work associated with
+                // the connection in a separate thread.
+                manageMyConnectedSocket(socket)
             }
         }
 
-        private fun manageMyConnectedSocket(it: BluetoothSocket) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        private fun manageMyConnectedSocket(socket: BluetoothSocket) {
+            //TODO
         }
 
-        // Closes the connect socket and causes the thread to finish.
+        // Closes the client socket and causes the thread to finish.
         fun cancel() {
             try {
-                mmServerSocket?.close()
+                mmSocket?.close()
             } catch (e: IOException) {
-                Log.e(TAG, "Could not close the connect socket", e)
+                Log.e(TAG, "Could not close the client socket", e)
             }
         }
     }
@@ -121,6 +114,5 @@ class BluetoothTestFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
-        AcceptThread().cancel()
     }
 }
