@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.se.omapi.SEService.OnConnectedListener
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.demoapp.R
+import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.fragment_bluetooth_test.*
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,6 +29,7 @@ val MY_UUID: UUID = UUID.fromString("cab49be8-9b26-4e62-8c78-7d1d8efe279e")
 class BluetoothTestFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnRefresh: Button
+    private lateinit var btnDiscover: Button
     private lateinit var navBar: BottomNavigationView
 
     override fun onCreateView(
@@ -56,6 +58,9 @@ class BluetoothTestFragment : Fragment() {
         btnRefresh = root.findViewById(R.id.btnRefresh)
         btnRefresh.setOnClickListener { pairedDevices() }
         //endregion
+        btnDiscover = root.findViewById(R.id.btnDiscover)
+        val device:BluetoothDevice = bluetoothAdapter?.bondedDevices!!.first()
+        btnDiscover.setOnClickListener{ConnectThread(device)}
         return root
     }
 
@@ -77,7 +82,7 @@ class BluetoothTestFragment : Fragment() {
     }
 
     private inner class ConnectThread(device: BluetoothDevice) : Thread() {
-        private val listener: OnConnectedListener? = null
+
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             device.createRfcommSocketToServiceRecord(MY_UUID)
         }
@@ -98,7 +103,8 @@ class BluetoothTestFragment : Fragment() {
         }
 
         private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-            //TODO
+            val airTemp =  AmbientAirTemperatureCommand().run(socket.inputStream, socket.outputStream).toString()
+            textView2.text = airTemp
         }
 
         // Closes the client socket and causes the thread to finish.
