@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.os.ParcelUuid
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,13 +29,14 @@ import kotlin.collections.ArrayList
 private const val REQUEST_ENABLE_BT = 1
 lateinit var send_data: String
 lateinit var view_data: TextView
-var MY_UUID_INSECURE: UUID = UUID.fromString("cab49be8-9b26-4e62-8c78-7d1d8efe279e")
+var MY_UUID_INSECURE: UUID =  UUID.randomUUID()
 
 class BluetoothTestFragment : Fragment() {
+    private val NAME: String? = "TEST"
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-    private lateinit var btnRefresh: Button
-    private lateinit var btnDiscover: Button
-    private lateinit var btnStartServer: Button
+    private lateinit var btnPaired: Button
+    private lateinit var btnServer: Button
+    private lateinit var btnPair: Button
     private lateinit var btnSend: Button
     private lateinit var navBar: BottomNavigationView
     private val testData: String = "Test"
@@ -43,23 +45,62 @@ class BluetoothTestFragment : Fragment() {
     private lateinit var deviceUUID: UUID
     var mConnectedThread: ConnectedThread? = null
 
-    fun pairDevice(v: View?) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
+        navBar = activity!!.findViewById(R.id.bottom_nav_view)
+        navBar.visibility = View.GONE
+
+        send_data = testData
+        view_data = root.findViewById(R.id.textView2)
+
+        //region bluetooth adapter code
+        if (bluetoothAdapter == null) {
+            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
+                .show()
+        }
+
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+        }
+        //endregion
+
+        //region button on click listeners
+        btnPaired = root.findViewById(R.id.btnPaired)
+        btnPaired.setOnClickListener { pairedDevices() }
+        btnServer = root.findViewById(R.id.btnServerStart)
+        btnServer.setOnClickListener { startServer() }
+        btnPair = root.findViewById(R.id.btnPair)
+        btnPair.setOnClickListener{pairDevice()}
+        btnSend = root.findViewById(R.id.btnSend)
+        btnSend.setOnClickListener{sendMessage()}
+        //endregion
+        return root
+    }
+
+    private fun pairDevice() {
         val pairedDevices =
-            bluetoothAdapter!!.bondedDevices
-        Log.e("MAinActivity", "" + pairedDevices.size)
-        if (pairedDevices.size > 0) {
-            val devices: Array<Any> = pairedDevices.toTypedArray()
-            val device = devices[0] as BluetoothDevice
-            //ParcelUuid[] uuid = device.getUuids();
-            Log.e("MainActivity", "" + device)
-            //Log.e("MAinActivity", "" + uuid)
-            val connect = ConnectThread(device, MY_UUID_INSECURE)
-            connect.start()
+            bluetoothAdapter?.bondedDevices
+        if (pairedDevices != null) {
+            Log.e("MAinActivity", "" + pairedDevices.size)
+            if (pairedDevices.size > 0) {
+                val devices: Array<Any> = pairedDevices.toTypedArray()
+                val device = devices[0] as BluetoothDevice
+                var list = device.uuids
+                var deviceUUID = UUID.fromString(list[0].toString())
+                Log.e("MainActivity", "" + device)
+                Log.e("MAinActivity", "" + deviceUUID)
+                val connect = ConnectThread(device, MY_UUID_INSECURE)
+                connect.start()
+            }
         }
     }
 
     inner class ConnectThread(device: BluetoothDevice, uuid: UUID) : Thread() {
-        private lateinit var mmSocket: BluetoothSocket
+        private var mmSocket: BluetoothSocket? = null
 
         init {
             Log.d(TAG, "ConnectThread: started.")
@@ -76,24 +117,26 @@ class BluetoothTestFragment : Fragment() {
                     TAG, "ConnectThread: Trying to create InsecureRfcommSocket using UUID: "
                             + MY_UUID_INSECURE
                 )
-                mmDevice.createRfcommSocketToServiceRecord(MY_UUID_INSECURE)
+               tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID_INSECURE)
             } catch (e: IOException) {
                 Log.e(TAG, "ConnectThread: Could not create InsecureRfcommSocket " + e.message)
             }
 
-            mmSocket = tmp!!
+
+                mmSocket = tmp
+
 
             // Make a connection to the BluetoothSocket
 
             try {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception
-                mmSocket.connect()
+                mmSocket?.connect()
 
             } catch (e: IOException) {
                 // Close the socket
                 try {
-                    mmSocket.close()
+                    mmSocket?.close()
                     Log.d(TAG, "run: Closed Socket.")
                 } catch (e1: IOException) {
                     Log.e(
@@ -104,13 +147,13 @@ class BluetoothTestFragment : Fragment() {
                 Log.d(TAG, "run: ConnectThread: Could not connect to UUID: $MY_UUID_INSECURE")
             }
             //will talk about this in the 3rd video
-            connected(mmSocket)
+            mmSocket?.let { connected(it) }
         }
 
         fun cancel() {
             try {
                 Log.d(TAG, "cancel: Closing Client Socket")
-                mmSocket.close()
+                mmSocket?.close()
             } catch (e: IOException) {
                 Log.e(TAG, "cancel: close() of mmSocket in connectThread failed " + e.message)
             }
@@ -186,41 +229,7 @@ class BluetoothTestFragment : Fragment() {
         mConnectedThread?.write(bytes)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
-        navBar = activity!!.findViewById(R.id.bottom_nav_view)
-        navBar.visibility = View.GONE
 
-        send_data = testData
-        view_data = root.findViewById(R.id.textView2)
-
-        //region bluetooth adapter code
-        if (bluetoothAdapter == null) {
-            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
-                .show()
-        }
-
-        if (bluetoothAdapter?.isEnabled == false) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-        }
-        //endregion
-
-        //region button on click listeners
-        btnRefresh = root.findViewById(R.id.btnRefresh)
-        btnRefresh.setOnClickListener { pairedDevices() }
-        btnDiscover = root.findViewById(R.id.btnSend)
-        btnDiscover.setOnClickListener { sendMessage() }
-        btnStartServer = root.findViewById(R.id.btnServerStart)
-        btnStartServer.setOnClickListener{startServer()}
-        btnSend = root.findViewById(R.id.btnSend)
-        btnSend.setOnClickListener{pairDevice()}
-        //endregion
-        return root
-    }
 
     private fun startServer() {
         val accept = AcceptThread()
@@ -228,46 +237,33 @@ class BluetoothTestFragment : Fragment() {
     }
 
     inner class AcceptThread : Thread() {
-        private var mmServerSocket: BluetoothServerSocket
-
-        init {
-            lateinit var tmp: BluetoothServerSocket
-            try {
-                tmp = bluetoothAdapter!!.listenUsingInsecureRfcommWithServiceRecord(
-                    "appname",
-                    MY_UUID_INSECURE
-                )
-                Log.d(TAG, "AcceptThread: Setting up Server using: $MY_UUID_INSECURE")
-            } catch (e: IOException) {
-                Log.e(TAG, "AcceptThread: IOException: " + e.message)
-            }
-            mmServerSocket = tmp
+        private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID_INSECURE)
         }
 
         override fun run() {
             Log.d(TAG, "run: AcceptThread Running")
-            var socket: BluetoothSocket? = null
 
-            try {
-                // This is a blocking call and will only return on a
-                // successful connection or an exception
-                Log.d(TAG, "run: RFCOM server socket start.....")
-                mmServerSocket.accept()
-                Log.d(TAG, "run: RFCOM server socket accepted connection.")
-            } catch (e: IOException) {
-                Log.e(TAG, "AcceptThread: IOException: " + e.message)
+            var shouldLoop = true
+            while (shouldLoop) {
+                val socket: BluetoothSocket? = try {
+                    mmServerSocket?.accept()
+                                    } catch (e: IOException) {
+                    Log.e(TAG, "AcceptThread: IOException: " + e.message)
+                    shouldLoop = false
+                    null
+                }
+                if (socket != null) {
+                    connected(socket)
+                }
+                Log.i(TAG, "End mAcceptThread ")
             }
-
-            if (socket != null) {
-                connected(socket)
-            }
-            Log.i(TAG, "End mAcceptThread ")
         }
 
         fun cancel() {
             Log.d(TAG, "cancel: Canceling AcceptThread.")
             try {
-                mmServerSocket.close()
+                mmServerSocket?.close()
             } catch (e: IOException) {
                 Log.e(TAG, "cancel: Close of AcceptThread ServerSocket failed. " + e.message)
             }
