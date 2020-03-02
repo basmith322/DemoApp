@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    fun goToTripLog() {
+    private fun goToTripLog() {
         val intent = Intent(this, LoggingActivity::class.java)
         startActivity(intent)
     }
