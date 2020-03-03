@@ -13,7 +13,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -26,7 +25,6 @@ class BluetoothTestFragment : Fragment() {
     private lateinit var btnPair: Button
     private lateinit var btnSend: Button
     private lateinit var navBar: BottomNavigationView
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -50,15 +48,18 @@ class BluetoothTestFragment : Fragment() {
         }
         //endregion
 
+        val client = MyClientBluetoothService()
+        val server = MyServerBluetoothService(handler)
+
         //region button on click listeners
         btnPaired = root.findViewById(R.id.btnPaired)
         btnPaired.setOnClickListener { pairedDevices() }
         btnServer = root.findViewById(R.id.btnServerStart)
-        btnServer.setOnClickListener { MyBluetoothService(handler).startServer() }
+        btnServer.setOnClickListener { server.startServer() }
         btnPair = root.findViewById(R.id.btnPair)
-        btnPair.setOnClickListener { MyBluetoothService(handler).pairDevice() }
+        btnPair.setOnClickListener { client.connectToServer() }
         btnSend = root.findViewById(R.id.btnSend)
-        btnSend.setOnClickListener { MyBluetoothService(handler).sendMessage() }
+        btnSend.setOnClickListener { client.writeMessage() }
         //endregion
 
         return root
@@ -83,7 +84,7 @@ class BluetoothTestFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
-        MyBluetoothService(handler).AcceptThread().cancel()
+        MyServerBluetoothService(handler).AcceptThread().cancel()
 //        BTBackend().ConnectedThread().cancel()
     }
 }
