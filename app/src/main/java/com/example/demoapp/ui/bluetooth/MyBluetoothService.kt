@@ -78,7 +78,7 @@ class MyBluetoothService(private val handler: Handler) {
 
     inner class ConnectThread(device: BluetoothDevice) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            device.createInsecureRfcommSocketToServiceRecord(MY_UUID)
+            device.createRfcommSocketToServiceRecord(MY_UUID)
         }
 
         override fun run() {
@@ -111,7 +111,6 @@ class MyBluetoothService(private val handler: Handler) {
 
     private fun connected(mmSocket: BluetoothSocket) {
         Log.d(TAG, "connected: Starting.")
-
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = ConnectedThread(mmSocket)
         mConnectedThread!!.start()
@@ -135,6 +134,7 @@ class MyBluetoothService(private val handler: Handler) {
                 }
                 socket?.also {
                     connected(it)
+                    Thread.sleep(1000)
                     mmServerSocket?.close()
                     shouldLoop = false
                 }
