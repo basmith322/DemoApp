@@ -1,4 +1,4 @@
-package com.example.demoapp.ui.bluetooth
+package com.example.demoapp.utilities
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothServerSocket
@@ -59,7 +59,10 @@ class MyServerBluetoothService(private val handler: Handler) {
 
     inner class AcceptThread : Thread() {
         private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID)
+            bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(
+                NAME,
+                MY_UUID
+            )
         }
 
         override fun run() {

@@ -14,6 +14,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.demoapp.R
+import com.example.demoapp.utilities.MyClientBluetoothService
+import com.example.demoapp.utilities.MyServerBluetoothService
+import com.example.demoapp.utilities.REQUEST_ENABLE_BT
+import com.example.demoapp.utilities.view_data
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -44,12 +48,15 @@ class BluetoothTestFragment : Fragment() {
 
         if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+            startActivityForResult(enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
         }
         //endregion
 
         val client = MyClientBluetoothService()
-        val server = MyServerBluetoothService(handler)
+        val server =
+            MyServerBluetoothService(handler)
 
         //region button on click listeners
         btnPaired = root.findViewById(R.id.btnPaired)

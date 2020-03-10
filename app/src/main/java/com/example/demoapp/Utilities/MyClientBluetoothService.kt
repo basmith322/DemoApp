@@ -1,18 +1,25 @@
-package com.example.demoapp.ui.bluetooth
+package com.example.demoapp.utilities
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.util.Log
+import com.github.pires.obd.commands.engine.RPMCommand
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
 
 class MyClientBluetoothService {
     private var connectionToServer: ConnectToServerThread? = null
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
+
     inner class ConnectToServerThread(device: BluetoothDevice) : Thread() {
+        lateinit var input: InputStream
+        lateinit var output: OutputStream
+        lateinit var rpmCommand: RPMCommand
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             device.createRfcommSocketToServiceRecord(MY_UUID)
         }
@@ -33,7 +40,9 @@ class MyClientBluetoothService {
         }
 
         private fun manageMyConnectedSocket(mmSocket: BluetoothSocket) {
-            while (true){}
+            input = mmSocket.inputStream
+            output = mmSocket.outputStream
+            rpmCommand = RPMCommand()
         }
 
         fun cancel() {
