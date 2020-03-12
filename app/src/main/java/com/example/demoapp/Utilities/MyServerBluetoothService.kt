@@ -6,19 +6,13 @@ import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.os.Handler
 import android.util.Log
-import android.widget.TextView
-import java.io.*
+import java.io.IOException
+import java.io.InputStream
 import java.nio.charset.Charset
-import java.util.*
 
 const val MESSAGE_READ: Int = 0
-const val MESSAGE_WRITE: Int = 1
-const val MESSAGE_TOAST: Int = 2
 const val REQUEST_ENABLE_BT = 1
 const val NAME: String = "Device"
-var send_data: String = "Test"
-lateinit var view_data: TextView
-var MY_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
 class MyServerBluetoothService(private val handler: Handler) {
     private var mHandleRequestThread: HandleRequestThread? = null

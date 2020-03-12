@@ -3,51 +3,45 @@ package com.example.demoapp.ui.performance
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.pires.obd.commands.SpeedCommand
-import com.github.pires.obd.commands.engine.RPMCommand
 
 class PerformanceViewModel : ViewModel() {
 
     private val randomMph = (0..130).random()
-    private val randomRPM = (600..6000).random()
-    private val randomPSI = (0..300).random()
     private val randomMaxSpeed = (60..200).random()
-    private val rpmCommand: RPMCommand = RPMCommand()
-    private val speedCommand = SpeedCommand()
 
 
-    //Current Speed
+    //Current Speed Title
     private val _textCurrentSpeedTitle:MutableLiveData<String> = MutableLiveData<String>().apply {
         value = "Current Speed"
     }
     val textCurrentSpeedTitle: LiveData<String> = _textCurrentSpeedTitle
 
-    private val _textCurrentSpeed by lazy {
+    //Current speed value returned from ODB
+    val currentSpeed by lazy {
         MutableLiveData<String>()
     }
-    val textCurrentSpeed: MutableLiveData<String> = _textCurrentSpeed
 
-    //RPM
+    //RPM Title
     private val _textRPMTitle = MutableLiveData<String>().apply {
         value = "Current RPM"
     }
     val textRPMTitle: LiveData<String> = _textRPMTitle
 
-    private val _textRPM = MutableLiveData<Int>().apply {
-        value = randomRPM
+    //RPM value returned from ODB
+    val currentRPM by lazy {
+        MutableLiveData<String>()
     }
-    val textRPM: LiveData<Int> = _textRPM
 
-    //Boost Pressure
+    //Boost Pressure Title
     private val _textPSITitle = MutableLiveData<String>().apply {
         value = "Current PSI"
     }
     val textPSITitle: LiveData<String> = _textPSITitle
 
-    private val _textPSI = MutableLiveData<Int>().apply {
-        value = randomPSI
+    //Boost value returned from ODB
+    val currentBoost by lazy {
+        MutableLiveData<String>()
     }
-    val textPSI: LiveData<Int> = _textPSI
 
     //Avg Speed
     private val _textAvgSpeedTitle = MutableLiveData<String>().apply {

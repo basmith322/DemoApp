@@ -3,35 +3,35 @@ package com.example.demoapp.utilities
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.lifecycle.LiveData
-import com.example.demoapp.ui.bluetooth.BluetoothTestFragment
 import com.example.demoapp.ui.performance.PerformanceViewModel
 import com.github.pires.obd.commands.SpeedCommand
 import com.github.pires.obd.commands.engine.RPMCommand
-import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
-import kotlinx.android.synthetic.main.fragment_bluetooth_test.*
+import com.github.pires.obd.commands.pressure.BarometricPressureCommand
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
+import java.util.*
 
-class MyClientBluetoothService{
+var MY_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+class MyClientBluetoothService {
     private var connectionToServer: ConnectToServerThread? = null
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
-    inner class ConnectToServerThread(device: BluetoothDevice) : Thread() {
-        lateinit var input: InputStream
-        lateinit var output: OutputStream
-        private val performanceViewModel: PerformanceViewModel = PerformanceViewModel()
+
+
+    inner class ConnectToServerThread(device: BluetoothDevice, performanceViewModel: PerformanceViewModel) : Thread() {
+        private lateinit var input: InputStream
+        private var viewModel: PerformanceViewModel = performanceViewModel
+        private lateinit var output: OutputStream
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             device.createRfcommSocketToServiceRecord(MY_UUID)
         }
 
         override fun run() {
-            Log.d(ContentValues.TAG, "ConnectThread: started.")
+            Log.d(TAG, "ConnectThread: started.")
             bluetoothAdapter?.cancelDiscovery()
 
             mmSocket?.use { socket ->
@@ -48,21 +48,35 @@ class MyClientBluetoothService{
         private fun manageMyConnectedSocket(mmSocket: BluetoothSocket) {
             input = mmSocket.inputStream
             output = mmSocket.outputStream
+            performanceCommands(input,output)
+        }
 
+        private fun performanceCommands(inputStream: InputStream, outputStream: OutputStream) {
             val speedCommand = SpeedCommand()
-            speedCommand.run(input, output)
-            val speedResult = speedCommand.metricSpeed.toString()
-            performanceViewModel.textCurrentSpeed.postValue(speedResult)
-            Log.e(TAG, speedCommand.metricSpeed.toString())
+            speedCommand.run(inputStream,outputStream)
+            val speedResult = speedCommand.calculatedResult
+
+            val rpmCommand = RPMCommand()
+            rpmCommand.run(inputStream,outputStream)
+            val rpmResult = rpmCommand.calculatedResult
+
+            val boostCommand = BarometricPressureCommand()
+            boostCommand.run(inputStream,outputStream)
+            val boostResult = boostCommand.calculatedResult
+
+            val pViewModel = viewModel
+            pViewModel.currentSpeed.postValue(speedResult)
+            pViewModel.currentRPM.postValue(rpmResult)
+            pViewModel.currentBoost.postValue(boostResult)
         }
 
         fun cancel() {
             val any = try {
-                Log.d(ContentValues.TAG, "cancel: Closing Client Socket")
+                Log.d(TAG, "cancel: Closing Client Socket")
                 mmSocket?.close()
             } catch (e: IOException) {
                 Log.e(
-                    ContentValues.TAG,
+                    TAG,
                     "cancel: close() of mmSocket in connectThread failed " + e.message
                 )
             }
@@ -72,7 +86,7 @@ class MyClientBluetoothService{
             try {
                 mmSocket!!.outputStream!!.write(bytes)
             } catch (e: IOException) {
-                Log.e(ContentValues.TAG, "Error occurred when sending data", e)
+                Log.e(TAG, "Error occurred when sending data", e)
             }
         }
     }
@@ -81,7 +95,7 @@ class MyClientBluetoothService{
         connectionToServer!!.write("Test".toByteArray(Charset.defaultCharset()))
     }
 
-    fun connectToServer() {
+    fun connectToServer(performanceViewModel: PerformanceViewModel) {
         val pairedDevices =
             bluetoothAdapter?.bondedDevices
         if (pairedDevices != null) {
@@ -91,7 +105,7 @@ class MyClientBluetoothService{
                 val device: BluetoothDevice = devices[0] as BluetoothDevice
                 Log.e("MainActivity", "" + device)
 //                Log.e("MAinActivity", "" + deviceUUID)
-                connectionToServer = ConnectToServerThread(device)
+                connectionToServer = ConnectToServerThread(device, performanceViewModel)
                 connectionToServer!!.start()
             }
         }

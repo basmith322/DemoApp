@@ -17,7 +17,6 @@ import com.example.demoapp.R
 import com.example.demoapp.utilities.MyClientBluetoothService
 import com.example.demoapp.utilities.MyServerBluetoothService
 import com.example.demoapp.utilities.REQUEST_ENABLE_BT
-import com.example.demoapp.utilities.view_data
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -37,8 +36,6 @@ class BluetoothTestFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
-
-        view_data = root.findViewById(R.id.textView2)
 
         //region bluetooth adapter code
         if (bluetoothAdapter == null) {
@@ -64,7 +61,7 @@ class BluetoothTestFragment : Fragment() {
         btnServer = root.findViewById(R.id.btnServerStart)
         btnServer.setOnClickListener { server.startServer() }
         btnPair = root.findViewById(R.id.btnPair)
-        btnPair.setOnClickListener { client.connectToServer() }
+//        btnPair.setOnClickListener { client.connectToServer() }
         btnSend = root.findViewById(R.id.btnSend)
         btnSend.setOnClickListener { client.writeMessage() }
         //endregion
