@@ -3,6 +3,7 @@ package com.example.demoapp.ui.performance
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.pires.obd.commands.SpeedCommand
 import com.github.pires.obd.commands.engine.RPMCommand
 
 class PerformanceViewModel : ViewModel() {
@@ -11,18 +12,20 @@ class PerformanceViewModel : ViewModel() {
     private val randomRPM = (600..6000).random()
     private val randomPSI = (0..300).random()
     private val randomMaxSpeed = (60..200).random()
-    private val rpmCommand:RPMCommand = RPMCommand()
+    private val rpmCommand: RPMCommand = RPMCommand()
+    private val speedCommand = SpeedCommand()
+
 
     //Current Speed
-    private val _textCurrentSpeedTitle = MutableLiveData<String>().apply {
+    private val _textCurrentSpeedTitle:MutableLiveData<String> = MutableLiveData<String>().apply {
         value = "Current Speed"
     }
     val textCurrentSpeedTitle: LiveData<String> = _textCurrentSpeedTitle
 
-    private val _textCurrentSpeed = MutableLiveData<Int>().apply {
-        value = rpmCommand.rpm
+    private val _textCurrentSpeed by lazy {
+        MutableLiveData<String>()
     }
-    val textCurrentSpeed: LiveData<Int> = _textCurrentSpeed
+    val textCurrentSpeed: MutableLiveData<String> = _textCurrentSpeed
 
     //RPM
     private val _textRPMTitle = MutableLiveData<String>().apply {

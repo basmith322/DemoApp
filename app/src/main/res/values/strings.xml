@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DemoApp</string>
+    <string name="app_name">DigiDash</string>
     <string name="title_Perf">Performance</string>
     <string name="title_Trip">Trip</string>
     <string name="title_Battery">Battery</string>
