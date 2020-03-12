@@ -2,6 +2,8 @@ package com.example.demoapp.ui.performance
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +14,27 @@ import androidx.lifecycle.Observer
 import com.example.demoapp.R
 import com.example.demoapp.utilities.MyClientBluetoothService
 import kotlinx.android.synthetic.main.fragment_performance.*
+import java.util.Timer
+import kotlin.concurrent.schedule
+import kotlin.concurrent.thread
 
 
 class PerformanceFragment : Fragment() {
     private val performanceViewModel: PerformanceViewModel by viewModels()
+    lateinit var mainHandler: Handler
+
+    private val updatePerformanceTask = object : Runnable {
+        override fun run() {
+            MyClientBluetoothService().connectToServer(performanceViewModel)
+            mainHandler.postDelayed(this, 2000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MyClientBluetoothService().connectToServer(performanceViewModel)
-    }
+        mainHandler = Handler(Looper.getMainLooper())
+   }
+
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,5 +113,11 @@ class PerformanceFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        mainHandler.removeCallbacks(updatePerformanceTask)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainHandler.post(updatePerformanceTask)
     }
 }

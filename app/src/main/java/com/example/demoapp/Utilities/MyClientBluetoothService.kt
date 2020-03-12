@@ -5,10 +5,15 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import com.example.demoapp.R
+import com.example.demoapp.ui.bluetooth.BluetoothFragment
 import com.example.demoapp.ui.performance.PerformanceViewModel
 import com.github.pires.obd.commands.SpeedCommand
 import com.github.pires.obd.commands.engine.RPMCommand
 import com.github.pires.obd.commands.pressure.BarometricPressureCommand
+import kotlinx.android.synthetic.main.fragment_bluetooth.view.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -19,8 +24,6 @@ var MY_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 class MyClientBluetoothService {
     private var connectionToServer: ConnectToServerThread? = null
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
-
 
     inner class ConnectToServerThread(device: BluetoothDevice, performanceViewModel: PerformanceViewModel) : Thread() {
         private lateinit var input: InputStream
@@ -54,15 +57,15 @@ class MyClientBluetoothService {
         private fun performanceCommands(inputStream: InputStream, outputStream: OutputStream) {
             val speedCommand = SpeedCommand()
             speedCommand.run(inputStream,outputStream)
-            val speedResult = speedCommand.calculatedResult
+            val speedResult:String = speedCommand.imperialSpeed.toInt().toString() + " MPH"
 
             val rpmCommand = RPMCommand()
             rpmCommand.run(inputStream,outputStream)
-            val rpmResult = rpmCommand.calculatedResult
+            val rpmResult = rpmCommand.calculatedResult + " RPM"
 
             val boostCommand = BarometricPressureCommand()
             boostCommand.run(inputStream,outputStream)
-            val boostResult = boostCommand.calculatedResult
+            val boostResult = boostCommand.imperialUnit.toInt().toString() + " PSI"
 
             val pViewModel = viewModel
             pViewModel.currentSpeed.postValue(speedResult)

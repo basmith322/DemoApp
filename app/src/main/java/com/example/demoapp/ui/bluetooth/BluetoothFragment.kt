@@ -20,7 +20,7 @@ import com.example.demoapp.utilities.REQUEST_ENABLE_BT
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class BluetoothTestFragment : Fragment() {
+class BluetoothFragment : Fragment() {
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnPaired: Button
@@ -32,10 +32,12 @@ class BluetoothTestFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-                // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_bluetooth_test, container, false)
+        // Inflate the layout for this fragment
+        val root = inflater.inflate(R.layout.fragment_bluetooth, container, false)
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
+
+        pairedDevices()
 
         //region bluetooth adapter code
         if (bluetoothAdapter == null) {
@@ -45,7 +47,8 @@ class BluetoothTestFragment : Fragment() {
 
         if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent,
+            startActivityForResult(
+                enableBtIntent,
                 REQUEST_ENABLE_BT
             )
         }
@@ -56,8 +59,6 @@ class BluetoothTestFragment : Fragment() {
             MyServerBluetoothService(handler)
 
         //region button on click listeners
-        btnPaired = root.findViewById(R.id.btnPaired)
-        btnPaired.setOnClickListener { pairedDevices() }
         btnServer = root.findViewById(R.id.btnServerStart)
         btnServer.setOnClickListener { server.startServer() }
         btnPair = root.findViewById(R.id.btnPair)
