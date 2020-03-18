@@ -27,5 +27,6 @@
     <string name="btnLogging">Log Trip Data</string>
     <string name="txtOptions">Additional</string>
     <string name="btnRetrieveLog">Retrieve Logs</string>
-    <string name="txtSelectDevice">Please select the correct ODB device from the list</string>
+    <string name="txtDeviceList">Please select the correct ODB device from the list</string>
+    <string name="txtSelectDevice">Select Device</string>
 </resources>

@@ -91,8 +91,4 @@ class MyServerBluetoothService(private val handler: Handler) {
         }
     }
 
-    fun startServer() {
-        val accept = AcceptThread()
-        accept.start()
-    }
 }

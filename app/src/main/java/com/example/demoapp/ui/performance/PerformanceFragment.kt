@@ -1,9 +1,12 @@
 package com.example.demoapp.ui.performance
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,26 +17,19 @@ import androidx.lifecycle.Observer
 import com.example.demoapp.R
 import com.example.demoapp.utilities.MyClientBluetoothService
 import kotlinx.android.synthetic.main.fragment_performance.*
-import java.util.Timer
-import kotlin.concurrent.schedule
-import kotlin.concurrent.thread
+import java.lang.Exception
 
 
 class PerformanceFragment : Fragment() {
     private val performanceViewModel: PerformanceViewModel by viewModels()
     lateinit var mainHandler: Handler
-
-    private val updatePerformanceTask = object : Runnable {
-        override fun run() {
-            MyClientBluetoothService().connectToServer(performanceViewModel)
-            mainHandler.postDelayed(this, 2000)
-        }
-    }
+    private lateinit var data: Bundle
+    private lateinit var currentDevice: BluetoothDevice
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
-   }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -109,6 +105,19 @@ class PerformanceFragment : Fragment() {
 
         })
         return root
+    }
+
+    private val updatePerformanceTask = object : Runnable {
+        override fun run() {
+            try {
+                data = arguments!!
+                currentDevice = data.get("currentDevice") as BluetoothDevice
+                MyClientBluetoothService().connectToServer(performanceViewModel, currentDevice)
+                mainHandler.postDelayed(this, 3000)
+            }catch (e: Exception) {
+                Log.e(TAG, "Device not yet set", e)
+            }
+        }
     }
 
     override fun onPause() {

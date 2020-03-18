@@ -34,7 +34,7 @@
                 android:id="@+id/navigation_Bluetooth"
                 android:title="@string/title_bluetooth" />
             <item
-                android:id="@+id/signOutFragment"
+                android:id="@+id/navigation_Signout"
                 android:title="@string/signout"/>
         </menu>
     </item>
