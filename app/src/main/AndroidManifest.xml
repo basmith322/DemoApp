@@ -16,17 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.bluetooth.BluetoothActivity"></activity>
         <activity
             android:name=".ui.trip.LoggingActivity"
             android:label="Trip Logging" />
         <activity
             android:name=".userauth.LoginActivity"
-            android:label="Login"
+            android:label="DigiDash"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
