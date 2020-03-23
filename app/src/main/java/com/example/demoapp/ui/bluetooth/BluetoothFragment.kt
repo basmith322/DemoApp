@@ -61,7 +61,7 @@ class BluetoothFragment : Fragment() {
         return root
     }
 
-    private fun sendFragment(data:Bundle) {
+    private fun sendFragment(data: Bundle) {
         Toast.makeText(context, "Device Selected: ${currentDevice.name}", Toast.LENGTH_LONG).show()
         val perfFragment = PerformanceFragment()
         val fragmentManager = parentFragmentManager

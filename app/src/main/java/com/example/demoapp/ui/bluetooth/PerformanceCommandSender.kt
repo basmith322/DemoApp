@@ -8,13 +8,13 @@ import com.github.pires.obd.commands.pressure.BarometricPressureCommand
 import java.io.InputStream
 import java.io.OutputStream
 
-class PerformanceCommandSender(device: BluetoothDevice, viewModel: PerformanceViewModel) :
-    AbstractCommandSender<PerformanceViewModel>(device, viewModel) {
+class PerformanceCommandSender(device: BluetoothDevice, providedViewModel: PerformanceViewModel) :
+    AbstractCommandSender<PerformanceViewModel>(device, providedViewModel) {
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
         val speedCommand = SpeedCommand()
         speedCommand.run(inputStream, outputStream)
-        val speedResult: String = speedCommand.imperialSpeed.toInt().toString() + " MPH"
+        val speedResult = speedCommand.imperialSpeed.toInt().toString() + " MPH"
 
         val rpmCommand = RPMCommand()
         rpmCommand.run(inputStream, outputStream)

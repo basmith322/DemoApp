@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.performance
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -25,13 +26,14 @@ class PerformanceFragment : Fragment() {
     lateinit var mainHandler: Handler
     private lateinit var data: Bundle
     private lateinit var currentDevice: BluetoothDevice
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,11 +109,17 @@ class PerformanceFragment : Fragment() {
             try {
                 data = arguments!!
                 currentDevice = data.get("currentDevice") as BluetoothDevice
-                CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
-                mainHandler.postDelayed(this, 3000)
             } catch (e: Exception) {
-                Log.e(TAG, "Device not yet set", e)
+                Log.e(TAG, "Device not yet set, Falling back to default device", e)
+                try {
+                    val pairedDevices = bluetoothAdapter?.bondedDevices
+                    currentDevice = pairedDevices!!.first()
+                } catch (e: Exception) {
+                    Log.e(TAG, "No devices in device list")
+                }
             }
+            CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
+            mainHandler.postDelayed(this, 2000)
         }
     }
 

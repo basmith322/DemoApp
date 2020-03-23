@@ -1,5 +1,6 @@
 package com.example.demoapp.ui.consumption
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
 import android.os.Bundle
@@ -17,12 +18,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_consumption.*
+import java.lang.Exception
 
 class ConsumptionFragment : Fragment() {
     private val consumptionViewModel: ConsumptionViewModel by viewModels()
     lateinit var mainHandler: Handler
     private lateinit var data: Bundle
     private lateinit var currentDevice: BluetoothDevice
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,13 +42,14 @@ class ConsumptionFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_consumption, container, false)
 
         //Current Consumption Title
-        val textConsumptionTitle: TextView = root.findViewById(R.id.textView_CurrentConsumptionTitle)
+        val textConsumptionTitle: TextView =
+            root.findViewById(R.id.textView_CurrentConsumptionTitle)
         consumptionViewModel.textCurrentSpeedTitle.observe(viewLifecycleOwner, Observer {
             textConsumptionTitle.text = it
         })
 
         //Current Consumption value returned from OBD
-        val consumptionObserver = Observer<String> {currentConsumptionFromODB ->
+        val consumptionObserver = Observer<String> { currentConsumptionFromODB ->
             textView_CurrentConsumption.text = currentConsumptionFromODB
         }
         consumptionViewModel.currentConsumption.observe(viewLifecycleOwner, consumptionObserver)
@@ -58,7 +62,7 @@ class ConsumptionFragment : Fragment() {
         })
 
         //Avg Consumption value returned from OBD
-        val avgConsumptionObserver = Observer<String> {avgConsumptionFromOBD ->
+        val avgConsumptionObserver = Observer<String> { avgConsumptionFromOBD ->
             textView_AvgConsumption.text = avgConsumptionFromOBD
         }
         consumptionViewModel.avgConsumption.observe(viewLifecycleOwner, avgConsumptionObserver)
@@ -71,7 +75,7 @@ class ConsumptionFragment : Fragment() {
         })
 
         //Current Range value returned from OBD
-        val rangeObserver = Observer<String> {currentRangeFromOBD ->
+        val rangeObserver = Observer<String> { currentRangeFromOBD ->
             textView_Range.text = currentRangeFromOBD
         }
         consumptionViewModel.currentRange.observe(viewLifecycleOwner, rangeObserver)
@@ -84,10 +88,10 @@ class ConsumptionFragment : Fragment() {
         })
 
         //Current Air/Fuel ratio value returned from OBD
-        val airFuelObserver = Observer<String> {currentAirFuelFromOBD ->
+        val airFuelObserver = Observer<String> { currentAirFuelFromOBD ->
             textView_AirFuelRatio.text = currentAirFuelFromOBD
         }
-        consumptionViewModel.currentAirFuelRatio.observe(viewLifecycleOwner, rangeObserver)
+        consumptionViewModel.currentAirFuelRatio.observe(viewLifecycleOwner, airFuelObserver)
 
         return root
     }
@@ -97,11 +101,17 @@ class ConsumptionFragment : Fragment() {
             try {
                 data = arguments!!
                 currentDevice = data.get("currentDevice") as BluetoothDevice
-                CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
-                mainHandler.postDelayed(this, 3000)
             } catch (e: Exception) {
-                Log.e(ContentValues.TAG, "Device not yet set", e)
+                Log.e(ContentValues.TAG, "Device not yet set, Falling back to default device", e)
+                try {
+                    val pairedDevices = bluetoothAdapter?.bondedDevices
+                    currentDevice = pairedDevices!!.first()
+                } catch (e: Exception) {
+                    Log.e(ContentValues.TAG, "No devices in device list")
+                }
             }
+            CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
+            mainHandler.postDelayed(this, 2000)
         }
     }
 
