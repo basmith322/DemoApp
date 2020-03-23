@@ -17,11 +17,6 @@
         tools:layout="@layout/fragment_trip"/>
 
     <fragment
-        android:id="@+id/navigation_Battery"
-        android:name="com.example.demoapp.ui.battery.BatteryFragment"
-        android:label="@string/title_Battery"
-        tools:layout="@layout/fragment_battery" />
-    <fragment
         android:id="@+id/navigation_Temps"
         android:name="com.example.demoapp.ui.temperatures.TemperaturesFragment"
         android:label="@string/title_Temps"

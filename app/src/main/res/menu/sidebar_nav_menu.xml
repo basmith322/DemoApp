@@ -14,11 +14,6 @@
             android:title="@string/title_Trip" />
 
         <item
-            android:id="@+id/navigation_Battery"
-            android:icon="@drawable/ic_battery_80_black_24dp"
-            android:title="@string/title_Battery" />
-
-        <item
             android:id="@+id/navigation_Temps"
             android:icon="@drawable/ic_ac_unit_black_24dp"
             android:title="@string/title_Temps" />

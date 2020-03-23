@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.demoapp.R
-import com.example.demoapp.utilities.MyClientBluetoothService
+import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_performance.*
 import java.lang.Exception
 
@@ -52,11 +52,6 @@ class PerformanceFragment : Fragment() {
             textView_CurrentSpeed.text = currentSpeedFromOBD
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)
-
-//        val textCurrentSpeedMph: TextView = root.findViewById(R.id.textView_CurrentSpeed)
-//        performanceViewModel.textCurrentSpeed.observe(viewLifecycleOwner, Observer {
-//            textCurrentSpeedMph.text = "$it Mph"
-//        })
 
         //Current RPM Title
         val textCurrentRPMTitle: TextView = root.findViewById(R.id.textView_RPMTitle)
@@ -112,9 +107,9 @@ class PerformanceFragment : Fragment() {
             try {
                 data = arguments!!
                 currentDevice = data.get("currentDevice") as BluetoothDevice
-                MyClientBluetoothService().connectToServer(performanceViewModel, currentDevice)
+                CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
                 mainHandler.postDelayed(this, 3000)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Device not yet set", e)
             }
         }

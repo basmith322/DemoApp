@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_Perf,
                 R.id.navigation_Trip,
-                R.id.navigation_Battery,
                 R.id.navigation_Temps,
                 R.id.navigation_Fuel,
                 R.id.navigation_Bluetooth
