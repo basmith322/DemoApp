@@ -1,4 +1,4 @@
-package com.example.demoapp.userauth
+package com.example.demoapp.userAuthentication
 
 import android.content.Intent
 import android.os.Bundle

@@ -49,10 +49,10 @@ class PerformanceViewModel : ViewModel() {
     }
     val textAvgSpeedTitle: LiveData<String> = _textAvgSpeedTitle
 
-    private val _textAvgSpeed = MutableLiveData<Int>().apply {
-        value = randomMph
+    private val _textAvgSpeed = MutableLiveData<String>().apply {
+        value = randomMph.toString() + "Mph"
     }
-    val textAvgSpeed: LiveData<Int> = _textAvgSpeed
+    val textAvgSpeed: LiveData<String> = _textAvgSpeed
 
     //Max Speed
     private val _textMaxSpeedTitle = MutableLiveData<String>().apply {
@@ -60,9 +60,9 @@ class PerformanceViewModel : ViewModel() {
     }
     val textMaxSpeedTitle: LiveData<String> = _textMaxSpeedTitle
 
-    private val _textMaxSpeed = MutableLiveData<Int>().apply {
-        value = randomMaxSpeed
+    private val _textMaxSpeed = MutableLiveData<String>().apply {
+        value = randomMaxSpeed.toString() + "Mph"
     }
-    val textMaxSpeed: LiveData<Int> = _textMaxSpeed
+    val textMaxSpeed: LiveData<String> = _textMaxSpeed
 
 }

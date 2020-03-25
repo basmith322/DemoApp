@@ -4,9 +4,6 @@ import android.bluetooth.BluetoothDevice
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
 import com.github.pires.obd.commands.fuel.AirFuelRatioCommand
 import com.github.pires.obd.commands.fuel.ConsumptionRateCommand
-import com.github.pires.obd.commands.fuel.FuelLevelCommand
-import com.github.pires.obd.commands.fuel.FuelTrimCommand
-import com.github.pires.obd.enums.FuelTrim
 import java.io.InputStream
 import java.io.OutputStream
 

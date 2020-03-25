@@ -1,4 +1,4 @@
-package com.example.demoapp.userauth
+package com.example.demoapp.userAuthentication
 
 import android.content.Context
 import android.content.Intent
@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         CloseKeyboard().hideKeyboard(view)
         progressBar.visibility = View.VISIBLE
 
-        //Attempt signin. If user does not exist or password/email are of poor format, user will not be logged in and cannot continue.
+        //Attempt sign in. If user does not exist or password/email are of poor format, user will not be logged in and cannot continue.
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this@LoginActivity) { task ->
                 //checking if successful

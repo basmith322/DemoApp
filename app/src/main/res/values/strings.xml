@@ -2,13 +2,12 @@
     <string name="app_name">DigiDash</string>
     <string name="title_Perf">Performance</string>
     <string name="title_Trip">Trip</string>
-    <string name="title_Battery">Battery</string>
     <string name="title_Temps">Temperatures</string>
     <string name="title_Fuel">Consumption</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_header_title">Digital Car Dashboard</string>
     <string name="nav_header_subtitle">smith-b9@ulster.ac.uk</string>
-    <string name="imgSpeedo">Speedometer</string>
+    <string name="imgSpeedometer">Speedometer</string>
     <string name="title_bluetooth">Bluetooth</string>
     <string name="extras">Extras</string>
     <string name="txtRegister">Welcome. Please Register to Continue</string>
@@ -18,9 +17,9 @@
     <string name="hintPassword">Enter Password</string>
     <string name="txtLogin">Welcome. Please Login to Continue</string>
     <string name="btnLogin">Login</string>
-    <string name="txtLoginReg">Don\'t have an account? Signup Here</string>
-    <string name="txtNoNetwork">There is currnently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
-    <string name="signout">Sign Out</string>
+    <string name="txtLoginReg">Don\'t have an account? Sign Up Here</string>
+    <string name="txtNoNetwork">There is currently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
+    <string name="signOut">Sign Out</string>
     <string name="txtLogging">Welcome to Trip Logging</string>
     <string name="btnLogging">Log Trip Data</string>
     <string name="txtOptions">Additional</string>

@@ -14,11 +14,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.demoapp.R
 import com.example.demoapp.ui.performance.PerformanceFragment
-import com.example.demoapp.ui.performance.PerformanceViewModel
-import com.example.demoapp.utilities.MyServerBluetoothService
-import com.example.demoapp.utilities.REQUEST_ENABLE_BT
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+const val REQUEST_ENABLE_BT = 1
 class BluetoothFragment : Fragment() {
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -27,6 +25,7 @@ class BluetoothFragment : Fragment() {
     private lateinit var currentDevice: BluetoothDevice
     private lateinit var data: Bundle
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -34,9 +33,6 @@ class BluetoothFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_bluetooth, container, false)
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
-
-        val spinner: Spinner = root.findViewById(R.id.spnDevices)
-        pairedDevices(spinner, performanceViewModel = PerformanceViewModel())
 
         //region bluetooth adapter code
         //show a toast notification if the device does not support bluetooth
@@ -52,8 +48,14 @@ class BluetoothFragment : Fragment() {
                 enableBtIntent,
                 REQUEST_ENABLE_BT
             )
+            Thread.sleep(2000)
+            val spinner: Spinner = root.findViewById(R.id.spnDevices)
+            pairedDevices(spinner)
         }
         //endregion
+
+        val spinner: Spinner = root.findViewById(R.id.spnDevices)
+        pairedDevices(spinner)
 
         btnPair = root.findViewById(R.id.btnSelectDevice)
         btnPair.setOnClickListener { sendFragment(data) }
@@ -69,7 +71,7 @@ class BluetoothFragment : Fragment() {
         fragmentManager.beginTransaction().replace(R.id.fragmentContainer, perfFragment).commit()
     }
 
-    private fun pairedDevices(spinner: Spinner, performanceViewModel: PerformanceViewModel) {
+    private fun pairedDevices(spinner: Spinner) {
         val pairedList = bluetoothAdapter?.bondedDevices
         val deviceList = java.util.ArrayList<String>()
         pairedList?.forEach { device ->
@@ -117,6 +119,5 @@ class BluetoothFragment : Fragment() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
         btnPair.visibility = View.INVISIBLE
-        MyServerBluetoothService(handler).AcceptThread().cancel()
     }
 }

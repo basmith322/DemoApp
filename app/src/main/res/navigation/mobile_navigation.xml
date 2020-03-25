@@ -27,8 +27,8 @@
         android:label="@string/title_Fuel"
         tools:layout="@layout/fragment_consumption" />
     <fragment
-        android:id="@+id/navigation_Signout"
-        android:name="com.example.demoapp.userauth.SignOutFragment"
+        android:id="@+id/navigation_SignOut"
+        android:name="com.example.demoapp.userAuthentication.SignOutFragment"
         android:label="sign_out_fragment"
         tools:layout="@layout/sign_out_fragment" />
     <fragment

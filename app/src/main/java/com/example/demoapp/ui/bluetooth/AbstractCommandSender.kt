@@ -27,21 +27,22 @@ abstract class AbstractCommandSender<T : ViewModel>
     override fun run() {
         Log.d(ContentValues.TAG, "ConnectThread: started.")
         bluetoothAdapter?.cancelDiscovery()
+        try {
+            mmSocket?.use { socket ->
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
 
-        mmSocket?.use { socket ->
-            // Connect to the remote device through the socket. This call blocks
-            // until it succeeds or throws an exception.
-            try {
                 socket.connect()
 
                 // The connection attempt succeeded. Perform work associated with
                 // the connection in a separate thread.
                 manageMyConnectedSocket(mmSocket!!)
-            } catch (e: Exception) {
-                Log.e(ContentValues.TAG, "Socket Connection Failed")
             }
+        } catch (e: Exception) {
+            Log.e(ContentValues.TAG, "Socket Connection Failed")
         }
     }
+
 
     private fun manageMyConnectedSocket(mmSocket: BluetoothSocket) {
         input = mmSocket.inputStream
@@ -52,7 +53,7 @@ abstract class AbstractCommandSender<T : ViewModel>
     protected abstract fun performCommand(inputStream: InputStream, outputStream: OutputStream)
 
     fun cancel() {
-        val any = try {
+        try {
             Log.d(ContentValues.TAG, "cancel: Closing Client Socket")
             mmSocket?.close()
         } catch (e: IOException) {

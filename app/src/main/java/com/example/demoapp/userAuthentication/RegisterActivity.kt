@@ -1,12 +1,12 @@
-package com.example.demoapp.userauth
+package com.example.demoapp.userAuthentication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CloseKeyboard

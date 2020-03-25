@@ -2,17 +2,23 @@ package com.example.demoapp.ui.temperatures
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.demoapp.R
-import kotlinx.android.synthetic.main.fragment_consumption.*
+import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
+import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_temperatures.*
 
 class TemperaturesFragment : Fragment() {
@@ -23,13 +29,32 @@ class TemperaturesFragment : Fragment() {
     private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainHandler = Handler(Looper.getMainLooper())
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
+                .show()
+        }
+
+        //if the device supports bluetooth but adapter is not enabled, request it to be enabled
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(
+                enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-       val root = inflater.inflate(R.layout.fragment_temperatures, container, false)
+        val root = inflater.inflate(R.layout.fragment_temperatures, container, false)
 
         //Current Coolant Temp Title
         val textCoolantTempTitle: TextView =
@@ -66,7 +91,7 @@ class TemperaturesFragment : Fragment() {
 
         //Current Range value returned from OBD
         val ambientAirTempObserver = Observer<String> { currentAirTempFromOBD ->
-            textAmbientAirTempTitle.text = currentAirTempFromOBD
+            textView_AirIntakeTemp.text = currentAirTempFromOBD
         }
         temperaturesViewModel.ambientAirTemp.observe(viewLifecycleOwner, ambientAirTempObserver)
 
@@ -83,7 +108,55 @@ class TemperaturesFragment : Fragment() {
         }
         temperaturesViewModel.temperature.observe(viewLifecycleOwner, tempObserver)
 
+
+        //Oil Temp Title
+        val textOilTempTitle: TextView = root.findViewById(R.id.textView_OilTempTitle)
+        temperaturesViewModel.textOilTempTitle.observe(viewLifecycleOwner, Observer {
+            textOilTempTitle.text = it
+        })
+
+        //Oil Temp value returned from OBD
+        val oilTempObserver = Observer<String> { currentOilTempReturnedFromOBD ->
+            textView_OilTemp.text = currentOilTempReturnedFromOBD
+        }
+        temperaturesViewModel.oilTemp.observe(viewLifecycleOwner, oilTempObserver)
+
         return root
+    }
+
+    private val updateTemperaturesTask = object : Runnable {
+        override fun run() {
+            if (bluetoothAdapter?.isEnabled == true) {
+                try {
+                    data = arguments!!
+                    currentDevice = data.get("currentDevice") as BluetoothDevice
+                } catch (e: Exception) {
+                    Log.e(TAG, "Device not yet set, Falling back to default device", e)
+                    try {
+                        val pairedDevices = bluetoothAdapter.bondedDevices
+                        currentDevice = pairedDevices!!.first()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "No devices in device list")
+                    }
+                }
+                try {
+                    CommandService().connectToServerTemperature(temperaturesViewModel, currentDevice)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error Connecting to Server: ", e)
+                }
+            }
+            mainHandler.postDelayed(this, 2000)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainHandler.removeCallbacks(updateTemperaturesTask)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainHandler.post(updateTemperaturesTask)
     }
 
 }

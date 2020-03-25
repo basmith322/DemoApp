@@ -1,4 +1,4 @@
-package com.example.demoapp.userauth
+package com.example.demoapp.userAuthentication
 
 import androidx.lifecycle.ViewModel
 

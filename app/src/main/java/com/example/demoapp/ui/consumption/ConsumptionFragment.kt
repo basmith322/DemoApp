@@ -2,7 +2,8 @@ package com.example.demoapp.ui.consumption
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,14 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
+import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_consumption.*
-import java.lang.Exception
 
 class ConsumptionFragment : Fragment() {
     private val consumptionViewModel: ConsumptionViewModel by viewModels()
@@ -31,6 +32,20 @@ class ConsumptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
+                .show()
+        }
+
+        //if the device supports bluetooth but adapter is not enabled, request it to be enabled
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(
+                enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
+        }
     }
 
     override fun onCreateView(
@@ -98,19 +113,25 @@ class ConsumptionFragment : Fragment() {
 
     private val updateConsumptionTask = object : Runnable {
         override fun run() {
-            try {
-                data = arguments!!
-                currentDevice = data.get("currentDevice") as BluetoothDevice
-            } catch (e: Exception) {
-                Log.e(ContentValues.TAG, "Device not yet set, Falling back to default device", e)
+            if (bluetoothAdapter?.isEnabled == true) {
                 try {
-                    val pairedDevices = bluetoothAdapter?.bondedDevices
-                    currentDevice = pairedDevices!!.first()
+                    data = arguments!!
+                    currentDevice = data.get("currentDevice") as BluetoothDevice
                 } catch (e: Exception) {
-                    Log.e(ContentValues.TAG, "No devices in device list")
+                    Log.e(TAG,"Device not yet set, Falling back to default device", e)
+                    try {
+                        val pairedDevices = bluetoothAdapter.bondedDevices
+                        currentDevice = pairedDevices!!.first()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "No devices in device list")
+                    }
+                }
+                try {
+                    CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error Connecting to Server: ", e)
                 }
             }
-            CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
             mainHandler.postDelayed(this, 2000)
         }
     }

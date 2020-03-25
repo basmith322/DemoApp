@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.trip.LoggingActivity"
+            android:name="com.example.demoapp.ui.trip.LoggingActivity"
             android:label="Trip Logging" />
         <activity
-            android:name=".userauth.LoginActivity"
+            android:name="com.example.demoapp.userAuthentication.LoginActivity"
             android:label="DigiDash"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
@@ -29,14 +29,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".userauth.NoNetwork"
+            android:name="com.example.demoapp.userAuthentication.NoNetwork"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".userauth.RegisterActivity"
+            android:name="com.example.demoapp.userAuthentication.RegisterActivity"
             android:label="Register"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.demoapp.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
