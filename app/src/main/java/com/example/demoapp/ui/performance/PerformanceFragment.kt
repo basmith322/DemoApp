@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.demoapp.R
-import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_performance.*
 

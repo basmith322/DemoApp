@@ -17,26 +17,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.demoapp.ui.trip.LoggingActivity"
+            android:name=".ui.trip.LoggingActivity"
             android:label="Trip Logging" />
         <activity
-            android:name="com.example.demoapp.userAuthentication.LoginActivity"
+            android:name=".userAuthentication.LoginActivity"
             android:label="DigiDash"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.demoapp.userAuthentication.NoNetwork"
+            android:name=".userAuthentication.NoNetwork"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="com.example.demoapp.userAuthentication.RegisterActivity"
+            android:name=".userAuthentication.RegisterActivity"
             android:label="Register"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="com.example.demoapp.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

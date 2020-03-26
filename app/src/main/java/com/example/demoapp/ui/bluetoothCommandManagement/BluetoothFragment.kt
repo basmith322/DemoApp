@@ -1,11 +1,9 @@
-package com.example.demoapp.ui.bluetooth
+package com.example.demoapp.ui.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 const val REQUEST_ENABLE_BT = 1
 class BluetoothFragment : Fragment() {
-    private val handler: Handler = Handler(Looper.getMainLooper())
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnPair: Button
     private lateinit var navBar: BottomNavigationView
@@ -68,7 +65,7 @@ class BluetoothFragment : Fragment() {
         val perfFragment = PerformanceFragment()
         val fragmentManager = parentFragmentManager
         perfFragment.arguments = data
-        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, perfFragment).commit()
+        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment).commit()
     }
 
     private fun pairedDevices(spinner: Spinner) {

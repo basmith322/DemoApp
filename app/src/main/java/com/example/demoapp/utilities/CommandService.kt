@@ -1,9 +1,9 @@
 package com.example.demoapp.utilities
 
 import android.bluetooth.BluetoothDevice
-import com.example.demoapp.ui.bluetooth.ConsumptionCommandSender
-import com.example.demoapp.ui.bluetooth.PerformanceCommandSender
-import com.example.demoapp.ui.bluetooth.TemperaturesCommandSender
+import com.example.demoapp.ui.bluetoothCommandManagement.ConsumptionCommandSender
+import com.example.demoapp.ui.bluetoothCommandManagement.PerformanceCommandSender
+import com.example.demoapp.ui.bluetoothCommandManagement.TemperaturesCommandSender
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
 import com.example.demoapp.ui.performance.PerformanceViewModel
 import com.example.demoapp.ui.temperatures.TemperaturesViewModel

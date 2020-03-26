@@ -42,18 +42,6 @@ class TemperaturesViewModel : ViewModel() {
     }
 
 
-    //Current Temperature Title
-    private val _textTemperatureTitle = MutableLiveData<String>().apply {
-        value = "Temperature"
-    }
-    val textTemperatureTitle: LiveData<String> = _textTemperatureTitle
-
-    //Current Temperature value returned from OBD
-    val temperature by lazy {
-        MutableLiveData<String>()
-    }
-
-
     //Current Oil Temp title
     private val _textOilTempTitle = MutableLiveData<String>().apply {
         value = "Oil Temp"

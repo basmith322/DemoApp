@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.demoapp.R
-import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_temperatures.*
 
@@ -76,7 +76,7 @@ class TemperaturesFragment : Fragment() {
             textAirIntakeTempTitle.text = it
         })
 
-        //Avg Consumption value returned from OBD
+        //Air Intake Temp value returned from OBD
         val airIntakeTempObserver = Observer<String> { airIntakeTempFromOBD ->
             textView_AirIntakeTemp.text = airIntakeTempFromOBD
         }
@@ -89,24 +89,11 @@ class TemperaturesFragment : Fragment() {
             textAmbientAirTempTitle.text = it
         })
 
-        //Current Range value returned from OBD
-        val ambientAirTempObserver = Observer<String> { currentAirTempFromOBD ->
-            textView_AirIntakeTemp.text = currentAirTempFromOBD
+        //Ambient Air Temp value returned from OBD
+        val ambientAirTempObserver = Observer<String> { ambientAirTempFromOBD ->
+            textView_AmbientAirTemp.text = ambientAirTempFromOBD
         }
         temperaturesViewModel.ambientAirTemp.observe(viewLifecycleOwner, ambientAirTempObserver)
-
-
-        //Temperature Title
-        val textTempTitle: TextView = root.findViewById(R.id.textView_TempTitle)
-        temperaturesViewModel.textTemperatureTitle.observe(viewLifecycleOwner, Observer {
-            textTempTitle.text = it
-        })
-
-        //Temp value returned from OBD
-        val tempObserver = Observer<String> { currentTempReturnedFromOBD ->
-            textView_Temp.text = currentTempReturnedFromOBD
-        }
-        temperaturesViewModel.temperature.observe(viewLifecycleOwner, tempObserver)
 
 
         //Oil Temp Title

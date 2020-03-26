@@ -1,4 +1,4 @@
-package com.example.demoapp.ui.bluetooth
+package com.example.demoapp.ui.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice

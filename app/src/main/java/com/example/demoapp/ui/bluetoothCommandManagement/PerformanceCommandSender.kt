@@ -1,4 +1,4 @@
-package com.example.demoapp.ui.bluetooth
+package com.example.demoapp.ui.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
 import com.example.demoapp.ui.performance.PerformanceViewModel

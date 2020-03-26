@@ -43,7 +43,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun Context.isConnectedToNetwork(): Boolean {
-        val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
         return connectivityManager?.activeNetworkInfo?.isConnectedOrConnecting ?: false
     }
 
@@ -79,12 +80,17 @@ class LoginActivity : AppCompatActivity() {
                 //checking if successful
                 if (task.isSuccessful) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT)
+                        .show()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
                     val e = task.exception as FirebaseAuthException
-                    Toast.makeText(this@LoginActivity, "Login Failed: " + e.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Login Failed: " + e.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                     progressBar.visibility = View.INVISIBLE
                 }
             }

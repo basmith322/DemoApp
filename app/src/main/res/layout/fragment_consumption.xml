@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/cardView3"
@@ -158,7 +158,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView_RangeTitle"
+                android:id="@+id/textView_FuelLevelTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -183,14 +183,14 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/imgSpeedometer"
-                app:layout_constraintBottom_toTopOf="@+id/textView_Range"
+                app:layout_constraintBottom_toTopOf="@+id/textView_FuelLevel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_RangeTitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_FuelLevelTitle"
                 app:srcCompat="@drawable/ic_speed_24px" />
 
             <TextView
-                android:id="@+id/textView_Range"
+                android:id="@+id/textView_FuelLevel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -217,8 +217,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView5"
         app:layout_constraintTop_toBottomOf="@+id/cardView2">
@@ -287,7 +286,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cardView4"
         app:layout_constraintStart_toStartOf="parent"
@@ -298,7 +297,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView_FuelTypeTitle"
+                android:id="@+id/textView_FuelPressureTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -323,14 +322,14 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/imgSpeedometer"
-                app:layout_constraintBottom_toTopOf="@+id/textView_FuelType"
-                app:layout_constraintEnd_toEndOf="@+id/textView_FuelTypeTitle"
-                app:layout_constraintStart_toStartOf="@+id/textView_FuelTypeTitle"
-                app:layout_constraintTop_toBottomOf="@+id/textView_FuelTypeTitle"
+                app:layout_constraintBottom_toTopOf="@+id/textView_FuelPressure"
+                app:layout_constraintEnd_toEndOf="@+id/textView_FuelPressureTitle"
+                app:layout_constraintStart_toStartOf="@+id/textView_FuelPressureTitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_FuelPressureTitle"
                 app:srcCompat="@drawable/ic_speed_24px" />
 
             <TextView
-                android:id="@+id/textView_FuelType"
+                android:id="@+id/textView_FuelPressure"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

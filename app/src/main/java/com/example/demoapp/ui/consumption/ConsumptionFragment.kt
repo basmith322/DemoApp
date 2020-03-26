@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.demoapp.R
-import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_consumption.*
 
@@ -83,17 +83,30 @@ class ConsumptionFragment : Fragment() {
         consumptionViewModel.avgConsumption.observe(viewLifecycleOwner, avgConsumptionObserver)
 
 
-        //Fuel Range Title
-        val textRangeTitle: TextView = root.findViewById(R.id.textView_RangeTitle)
+        //Fuel Level Title
+        val textFuelLevelTitle: TextView = root.findViewById(R.id.textView_FuelLevelTitle)
         consumptionViewModel.textRangeTitle.observe(viewLifecycleOwner, Observer {
-            textRangeTitle.text = it
+            textFuelLevelTitle.text = it
         })
 
-        //Current Range value returned from OBD
-        val rangeObserver = Observer<String> { currentRangeFromOBD ->
-            textView_Range.text = currentRangeFromOBD
+        //Current Fuel Level value returned from OBD
+        val fuelLevelObserver = Observer<String> { currentFuelLevelFromOBD ->
+            textView_FuelLevel.text = currentFuelLevelFromOBD
         }
-        consumptionViewModel.currentRange.observe(viewLifecycleOwner, rangeObserver)
+        consumptionViewModel.fuelLevel.observe(viewLifecycleOwner, fuelLevelObserver)
+
+
+        //Fuel Pressure Title
+        val textFuelPressureTitle: TextView = root.findViewById(R.id.textView_FuelPressureTitle)
+        consumptionViewModel.textFuelPressureTitle.observe(viewLifecycleOwner, Observer {
+            textFuelPressureTitle.text = it
+        })
+
+        //Current Fuel pressure value returned from OBD
+        val fuelPressureObserver = Observer<String> { currentFuelPressureFromOBD ->
+            textView_FuelPressure.text = currentFuelPressureFromOBD
+        }
+        consumptionViewModel.currentFuelPressure.observe(viewLifecycleOwner, fuelPressureObserver)
 
 
         //Air/Fuel Ratio Title

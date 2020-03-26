@@ -33,6 +33,6 @@
         tools:layout="@layout/sign_out_fragment" />
     <fragment
         android:id="@+id/navigation_Bluetooth"
-        android:name="com.example.demoapp.ui.bluetooth.BluetoothFragment"
+        android:name="com.example.demoapp.ui.bluetoothCommandManagement.BluetoothFragment"
         android:label="BluetoothFragment" />
 </navigation>
