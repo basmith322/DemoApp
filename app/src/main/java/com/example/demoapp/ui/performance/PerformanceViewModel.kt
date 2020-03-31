@@ -18,7 +18,7 @@ class PerformanceViewModel : ViewModel() {
 
     //Current speed value returned from ODB
     val currentSpeed by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Int>()
     }
 
     //RPM Title
@@ -29,7 +29,7 @@ class PerformanceViewModel : ViewModel() {
 
     //RPM value returned from ODB
     val currentRPM by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Int>()
     }
 
     //Boost Pressure Title
@@ -40,7 +40,7 @@ class PerformanceViewModel : ViewModel() {
 
     //Boost value returned from ODB
     val currentBoost by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Int>()
     }
 
     //Avg Speed

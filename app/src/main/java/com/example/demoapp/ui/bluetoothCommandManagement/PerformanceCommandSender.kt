@@ -14,15 +14,15 @@ class PerformanceCommandSender(device: BluetoothDevice, providedViewModel: Perfo
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
         val speedCommand = SpeedCommand()
         speedCommand.run(inputStream, outputStream)
-        val speedResult = speedCommand.imperialSpeed.toInt().toString() + " MPH"
+        val speedResult = speedCommand.imperialSpeed.toInt()
 
         val rpmCommand = RPMCommand()
         rpmCommand.run(inputStream, outputStream)
-        val rpmResult = rpmCommand.calculatedResult + " RPM"
+        val rpmResult = rpmCommand.rpm
 
         val boostCommand = BarometricPressureCommand()
         boostCommand.run(inputStream, outputStream)
-        val boostResult = boostCommand.imperialUnit.toInt().toString() + " PSI"
+        val boostResult = boostCommand.imperialUnit.toInt()
 
         val pViewModel = viewModel
         pViewModel.currentSpeed.postValue(speedResult)

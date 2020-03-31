@@ -26,4 +26,7 @@
     <string name="btnRetrieveLog">Retrieve Logs</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
     <string name="txtSelectDevice">Select Device</string>
+    <string name="RPM"> RPM</string>
+    <string name="MPH"> MPH</string>
+    <string name="PSI"> PSI</string>
 </resources>

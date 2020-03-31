@@ -32,26 +32,24 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView"
+            <com.cardiomood.android.controls.gauge.SpeedometerGauge
+                android:id="@+id/speedometer"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="15dp"
-                android:contentDescription="@string/imgSpeedometer"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/textView_CurrentSpeed"
-                app:layout_constraintEnd_toEndOf="@+id/textView_CurrentSpeed"
-                app:layout_constraintStart_toStartOf="@+id/textView_CurrentSpeed"
+                app:layout_constraintEnd_toEndOf="@+id/textView_CurrentSpeedTitle"
+                app:layout_constraintStart_toStartOf="@+id/textView_CurrentSpeedTitle"
                 app:layout_constraintTop_toBottomOf="@+id/textView_CurrentSpeedTitle"
-                app:srcCompat="@drawable/ic_speed_24px" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/textView_CurrentSpeed"
@@ -66,8 +64,7 @@
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -96,29 +93,25 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView2"
+            <com.cardiomood.android.controls.gauge.SpeedometerGauge
+                android:id="@+id/psiGauge"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:contentDescription="@string/imgSpeedometer"
+                android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/textView_PSI"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_PSITitle"
-                app:srcCompat="@drawable/ic_speed_24px" />
+                app:layout_constraintEnd_toEndOf="@+id/textView_PSITitle"
+                app:layout_constraintStart_toStartOf="@+id/textView_PSITitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_PSITitle" />
 
             <TextView
                 android:id="@+id/textView_PSI"
@@ -126,7 +119,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="bottom|center"
@@ -134,8 +126,7 @@
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
@@ -165,29 +156,25 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <com.cardiomood.android.controls.gauge.SpeedometerGauge
+                android:id="@+id/rpmGauge"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:contentDescription="@string/imgSpeedometer"
+                android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/textView_RPM"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_RPMTitle"
-                app:srcCompat="@drawable/ic_speed_24px" />
+                app:layout_constraintEnd_toEndOf="@+id/textView_RPMTitle"
+                app:layout_constraintStart_toStartOf="@+id/textView_RPMTitle"
+                app:layout_constraintTop_toBottomOf="@+id/textView_RPMTitle" />
 
             <TextView
                 android:id="@+id/textView_RPM"
@@ -195,7 +182,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="bottom|center"
@@ -203,8 +189,7 @@
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -234,46 +219,28 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:contentDescription="@string/imgSpeedometer"
-                app:layout_constraintBottom_toTopOf="@+id/textView_MaxSpeed"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_MaxSpeedTitle"
-                app:srcCompat="@drawable/ic_speed_24px" />
-
             <TextView
                 android:id="@+id/textView_MaxSpeed"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:gravity="bottom|center"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textSize="20sp"
+                android:textSize="36sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_MaxSpeedTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -304,46 +271,28 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:contentDescription="@string/imgSpeedometer"
-                app:layout_constraintBottom_toTopOf="@+id/textView_AvgSpeed"
-                app:layout_constraintEnd_toEndOf="@+id/textView_AvgSpeedTitle"
-                app:layout_constraintStart_toStartOf="@+id/textView_AvgSpeedTitle"
-                app:layout_constraintTop_toBottomOf="@+id/textView_AvgSpeedTitle"
-                app:srcCompat="@drawable/ic_speed_24px" />
-
             <TextView
                 android:id="@+id/textView_AvgSpeed"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:gravity="bottom|center"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textSize="20sp"
+                android:textSize="36sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_AvgSpeedTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
