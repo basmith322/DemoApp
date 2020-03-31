@@ -105,10 +105,10 @@ class PerformanceFragment : Fragment() {
         })
 
         //Current speed value returned from OBD
-        val speedObserver = Observer<Int> { currentSpeedFromOBD ->
+        val speedObserver = Observer<String> { currentSpeedFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_CurrentSpeed.text = "$currentSpeedFromOBD MPH"
-            speedometer.speed = currentSpeedFromOBD.toDouble()
+            textView_CurrentSpeed.text = "$currentSpeedFromOBD"
+//            speedometer.speed = currentSpeedFromOBD.toDouble()
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)
 

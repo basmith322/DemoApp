@@ -18,7 +18,7 @@ class PerformanceViewModel : ViewModel() {
 
     //Current speed value returned from ODB
     val currentSpeed by lazy {
-        MutableLiveData<Int>()
+        MutableLiveData<String>()
     }
 
     //RPM Title

@@ -25,7 +25,7 @@ class PerformanceCommandSender(device: BluetoothDevice, providedViewModel: Perfo
 
         val speedCommand = SpeedCommand()
         speedCommand.run(inputStream, outputStream)
-        val speedResult = speedCommand.imperialSpeed.toInt()
+        val speedResult = speedCommand.formattedResult
 
         val rpmCommand = RPMCommand()
         rpmCommand.run(inputStream, outputStream)
