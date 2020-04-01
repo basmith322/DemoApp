@@ -51,9 +51,6 @@ class BluetoothFragment : Fragment() {
         }
         //endregion
 
-        val spinner: Spinner = root.findViewById(R.id.spnDevices)
-        pairedDevices(spinner)
-
         btnPair = root.findViewById(R.id.btnSelectDevice)
         btnPair.setOnClickListener { sendFragment(data) }
 
