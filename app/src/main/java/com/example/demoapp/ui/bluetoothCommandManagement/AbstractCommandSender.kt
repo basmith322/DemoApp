@@ -57,7 +57,7 @@ abstract class AbstractCommandSender<T : ViewModel>
 
     protected abstract fun performCommand(inputStream: InputStream, outputStream: OutputStream)
 
-    fun cancel() {
+    private fun cancel() {
         try {
             Log.d(ContentValues.TAG, "cancel: Closing Client Socket")
             mmSocket?.close()
