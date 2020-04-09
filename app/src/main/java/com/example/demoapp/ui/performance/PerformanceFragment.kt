@@ -33,8 +33,6 @@ class PerformanceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
-
-
     }
 
     override fun onCreateView(
@@ -42,7 +40,6 @@ class PerformanceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val root = inflater.inflate(R.layout.fragment_performance, container, false)
 
         val speedometer: SpeedometerGauge
@@ -92,7 +89,7 @@ class PerformanceFragment : Fragment() {
         //Current speed value returned from OBD
         val speedObserver = Observer<String> { currentSpeedFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_CurrentSpeed.text = "$currentSpeedFromOBD"
+            textView_CurrentSpeed.text = currentSpeedFromOBD
 //            speedometer.speed = currentSpeedFromOBD.toDouble()
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)

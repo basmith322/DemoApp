@@ -29,4 +29,5 @@
     <string name="RPM"> RPM</string>
     <string name="MPH"> MPH</string>
     <string name="PSI"> PSI</string>
+    <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again</string>
 </resources>

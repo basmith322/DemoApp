@@ -2,9 +2,11 @@ package com.example.demoapp.utilities
 
 import android.bluetooth.BluetoothDevice
 import com.example.demoapp.ui.bluetoothCommandManagement.ConsumptionCommandSender
+import com.example.demoapp.ui.bluetoothCommandManagement.FaultCodesCommandSender
 import com.example.demoapp.ui.bluetoothCommandManagement.PerformanceCommandSender
 import com.example.demoapp.ui.bluetoothCommandManagement.TemperaturesCommandSender
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
+import com.example.demoapp.ui.faultCodes.FaultCodesViewModel
 import com.example.demoapp.ui.performance.PerformanceViewModel
 import com.example.demoapp.ui.temperatures.TemperaturesViewModel
 import java.util.*
@@ -23,5 +25,9 @@ class CommandService {
 
     fun connectToServerTemperature(temperaturesViewModel: TemperaturesViewModel, device: BluetoothDevice){
         TemperaturesCommandSender(device,temperaturesViewModel).start()
+    }
+
+    fun connectToServerFaults(faultCodesViewModel: FaultCodesViewModel, device: BluetoothDevice){
+        FaultCodesCommandSender(device,faultCodesViewModel)
     }
 }

@@ -10,8 +10,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.demoapp.MainActivity
 import com.example.demoapp.R
+import com.example.demoapp.ui.setup.BluetoothSetupActivity
 import com.example.demoapp.utilities.CloseKeyboard
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -21,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
@@ -34,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
 
             if (firebaseAuth.currentUser != null) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@LoginActivity, BluetoothSetupActivity::class.java))
                 finish()
             }
         } else {
@@ -82,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT)
                         .show()
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, BluetoothSetupActivity::class.java))
                     finish()
                 } else {
                     val e = task.exception as FirebaseAuthException
@@ -109,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
 
             if (firebaseAuth.currentUser != null) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@LoginActivity, BluetoothSetupActivity::class.java))
                 finish()
             }
         } else {

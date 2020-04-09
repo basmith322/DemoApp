@@ -1,11 +1,14 @@
 package com.example.demoapp.ui.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
+import android.content.ContentValues
+import android.util.Log
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
 import com.github.pires.obd.commands.fuel.AirFuelRatioCommand
 import com.github.pires.obd.commands.fuel.ConsumptionRateCommand
 import com.github.pires.obd.commands.fuel.FuelLevelCommand
 import com.github.pires.obd.commands.pressure.FuelPressureCommand
+import com.github.pires.obd.commands.protocol.ObdResetCommand
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -13,6 +16,15 @@ class ConsumptionCommandSender (device: BluetoothDevice, providedViewModel: Cons
     AbstractCommandSender<ConsumptionViewModel>(device, providedViewModel) {
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
+        val obdResetCommand = ObdResetCommand()
+        obdResetCommand.run(inputStream, outputStream)
+
+        try {
+            sleep(500)
+        } catch (e: InterruptedException) {
+            Log.e(ContentValues.TAG,"Error with OBD reset:", e)
+        }
+
         val consumptionCommand = ConsumptionRateCommand()
         consumptionCommand.run(inputStream, outputStream)
         val consumptionResult = consumptionCommand.calculatedResult + " MPG"

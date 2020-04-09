@@ -22,7 +22,6 @@ class BluetoothFragment : Fragment() {
     private lateinit var currentDevice: BluetoothDevice
     private lateinit var data: Bundle
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -45,10 +44,11 @@ class BluetoothFragment : Fragment() {
                 enableBtIntent,
                 REQUEST_ENABLE_BT
             )
-            Thread.sleep(2000)
-            val spinner: Spinner = root.findViewById(R.id.spnDevices)
-            pairedDevices(spinner)
         }
+
+        Thread.sleep(2000)
+        val spinner: Spinner = root.findViewById(R.id.spnDevices)
+        pairedDevices(spinner)
         //endregion
 
         btnPair = root.findViewById(R.id.btnSelectDevice)
