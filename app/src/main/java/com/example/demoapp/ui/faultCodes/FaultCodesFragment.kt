@@ -26,6 +26,7 @@ class FaultCodesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkBtDevices()
         mainHandler = Handler(Looper.getMainLooper())
     }
 
@@ -45,31 +46,30 @@ class FaultCodesFragment : Fragment() {
         return root
     }
 
+    private fun checkBtDevices() {
+        if (bluetoothAdapter?.isEnabled == true) {
+            try {
+                data = arguments!!
+                currentDevice = data.get("currentDevice") as BluetoothDevice
+            } catch (e: Exception) {
+                Log.e(ContentValues.TAG, "Device not yet set, Falling back to default device", e)
+                try {
+                    val pairedDevices = bluetoothAdapter.bondedDevices
+                    currentDevice = pairedDevices!!.first()
+                } catch (e: Exception) {
+                    Log.e(ContentValues.TAG, "No devices in device list")
+                }
+            }
+        }
+    }
+
     private val updateFaultsTask = object : Runnable {
         override fun run() {
-            if (bluetoothAdapter?.isEnabled == true) {
-                try {
-                    data = arguments!!
-                    currentDevice = data.get("currentDevice") as BluetoothDevice
-                } catch (e: Exception) {
-                    Log.e(
-                        ContentValues.TAG,
-                        "Device not yet set, Falling back to default device",
-                        e
-                    )
-                    try {
-                        val pairedDevices = bluetoothAdapter.bondedDevices
-                        currentDevice = pairedDevices!!.first()
-                    } catch (e: Exception) {
-                        Log.e(ContentValues.TAG, "No devices in device list")
-                    }
-                }
                 try {
                     CommandService().connectToServerFaults(faultCodesViewModel, currentDevice)
                 } catch (e: Exception) {
                     Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
                 }
-            }
             mainHandler.postDelayed(this, 2000)
         }
     }
@@ -80,6 +80,7 @@ class FaultCodesFragment : Fragment() {
     }
 
     override fun onResume() {
+        checkBtDevices()
         super.onResume()
         mainHandler.post(updateFaultsTask)
     }

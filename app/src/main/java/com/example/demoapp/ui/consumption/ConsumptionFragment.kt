@@ -29,6 +29,7 @@ class ConsumptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
+        checkBtDevices()
 
     }
 
@@ -110,26 +111,29 @@ class ConsumptionFragment : Fragment() {
 
     private val updateConsumptionTask = object : Runnable {
         override fun run() {
-            if (bluetoothAdapter?.isEnabled == true) {
-                try {
-                    data = arguments!!
-                    currentDevice = data.get("currentDevice") as BluetoothDevice
-                } catch (e: Exception) {
-                    Log.e(TAG,"Device not yet set, Falling back to default device", e)
-                    try {
-                        val pairedDevices = bluetoothAdapter.bondedDevices
-                        currentDevice = pairedDevices!!.first()
-                    } catch (e: Exception) {
-                        Log.e(TAG, "No devices in device list")
-                    }
-                }
-                try {
-                    CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error Connecting to Server: ", e)
-                }
+            try {
+                CommandService().connectToServerConsumption(consumptionViewModel, currentDevice)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error Connecting to Server: ", e)
             }
             mainHandler.postDelayed(this, 2000)
+        }
+    }
+
+    private fun checkBtDevices() {
+        if (bluetoothAdapter?.isEnabled == true) {
+            try {
+                data = arguments!!
+                currentDevice = data.get("currentDevice") as BluetoothDevice
+            } catch (e: Exception) {
+                Log.e(TAG, "Device not yet set, Falling back to default device", e)
+                try {
+                    val pairedDevices = bluetoothAdapter.bondedDevices
+                    currentDevice = pairedDevices!!.first()
+                } catch (e: Exception) {
+                    Log.e(TAG, "No devices in device list")
+                }
+            }
         }
     }
 
@@ -140,6 +144,7 @@ class ConsumptionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        checkBtDevices()
         mainHandler.post(updateConsumptionTask)
     }
 }

@@ -24,7 +24,8 @@
             android:title="@string/title_Fuel" />
         <item
             android:id="@+id/navigation_Faults"
-            android:title="Fault Codes"/>
+            android:icon="@android:drawable/stat_notify_error"
+            android:title="@string/txtFaultCodes"/>
     </group>
     <item android:title="@string/extras">
         <menu>

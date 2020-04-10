@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
+        <activity android:name=".ui.setup.ui.ProtocolActivity" />
         <activity
             android:name=".ui.setup.BluetoothSetupActivity"
             android:label="Bluetooth Setup" />
@@ -24,10 +25,11 @@
             android:label="Trip Logging" />
         <activity
             android:name=".userAuthentication.LoginActivity"
-            android:label="Login"
-            tools:ignore="InnerclassSeparator" >
+            android:label="DigiDash"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

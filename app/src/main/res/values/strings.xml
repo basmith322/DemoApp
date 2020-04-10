@@ -18,7 +18,7 @@
     <string name="txtLogin">Welcome. Please Login to Continue</string>
     <string name="btnLogin">Login</string>
     <string name="txtLoginReg">Don\'t have an account? Sign Up Here</string>
-    <string name="txtNoNetwork">There is currently no network connection. Please turn on WiFi or Mobile Data and go back to the login screen to try again</string>
+    <string name="txtNoNetwork">There is currently no network connection. Please turn on WiFi or Mobile Data and tap retry to try again.</string>
     <string name="signOut">Sign Out</string>
     <string name="txtLogging">Welcome to Trip Logging</string>
     <string name="btnLogging">Log Trip Data</string>
@@ -26,5 +26,10 @@
     <string name="btnRetrieveLog">Retrieve Logs</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
     <string name="txtSelectDevice">Select Device</string>
-    <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again</string>
+    <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again.</string>
+    <string name="btnRetry">Retry</string>
+    <string name="bluetoothPref"> </string>
+    <string name="txtFaultCodes">Fault Codes</string>
+    <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>
+    <string name="btnFindProtocol">Find Protocol</string>
 </resources>

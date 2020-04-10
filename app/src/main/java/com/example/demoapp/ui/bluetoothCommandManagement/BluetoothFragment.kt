@@ -46,7 +46,7 @@ class BluetoothFragment : Fragment() {
             )
         }
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         val spinner: Spinner = root.findViewById(R.id.spnDevices)
         pairedDevices(spinner)
         //endregion

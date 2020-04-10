@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
             }
         } else {
             startActivity(Intent(this@LoginActivity, NoNetwork::class.java))
+            finish()
         }
     }
 
@@ -99,6 +100,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun goRegister(view: View) {
         startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+        finish()
     }
 
     //Again check if there is network connection.
@@ -115,6 +117,7 @@ class LoginActivity : AppCompatActivity() {
             }
         } else {
             startActivity(Intent(this@LoginActivity, NoNetwork::class.java))
+            finish()
         }
     }
 

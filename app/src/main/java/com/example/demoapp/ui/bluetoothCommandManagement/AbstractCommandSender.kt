@@ -33,10 +33,7 @@ abstract class AbstractCommandSender<T : ViewModel>
             mmSocket?.use { socket ->
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
-
                 socket.connect()
-
-
 
                 // The connection attempt succeeded. Perform work associated with
                 // the connection in a separate thread.
@@ -47,7 +44,6 @@ abstract class AbstractCommandSender<T : ViewModel>
             cancel()
         }
     }
-
 
     private fun manageMyConnectedSocket(mmSocket: BluetoothSocket) {
         input = mmSocket.inputStream

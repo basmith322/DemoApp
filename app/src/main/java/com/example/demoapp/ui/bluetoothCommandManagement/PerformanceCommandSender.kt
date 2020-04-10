@@ -16,15 +16,6 @@ class PerformanceCommandSender(device: BluetoothDevice, providedViewModel: Perfo
     AbstractCommandSender<PerformanceViewModel>(device, providedViewModel) {
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
-//        val selectProtocolCommand = SelectProtocolCommand(ObdProtocols.AUTO)
-//        try {
-//            selectProtocolCommand.run(inputStream, outputStream)
-//        } catch (e: Exception) {
-//            Log.e(TAG, "Error connecting protocol", e)
-//        }
-
-        //insert adapter reset here
-
         val obdResetCommand = ObdResetCommand()
         obdResetCommand.run(inputStream, outputStream)
 

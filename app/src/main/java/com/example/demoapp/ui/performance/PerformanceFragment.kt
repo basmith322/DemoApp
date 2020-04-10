@@ -29,10 +29,10 @@ class PerformanceFragment : Fragment() {
     private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
+        checkBtDevices()
     }
 
     override fun onCreateView(
@@ -77,7 +77,6 @@ class PerformanceFragment : Fragment() {
             SpeedometerGauge.LabelConverter { progress, maxProgress -> (progress.roundToInt()).toString() }
         psiGauge.maxSpeed = 10.0
         psiGauge.majorTickStep = 2.0
-
 
 
         //Current Speed Title
@@ -145,26 +144,29 @@ class PerformanceFragment : Fragment() {
         return root
     }
 
+    private fun checkBtDevices() {
+        if (bluetoothAdapter?.isEnabled == true) {
+            try {
+                data = arguments!!
+                currentDevice = data.get("currentDevice") as BluetoothDevice
+            } catch (e: Exception) {
+                Log.e(TAG, "Device not yet set, Falling back to default device", e)
+                try {
+                    val pairedDevices = bluetoothAdapter.bondedDevices
+                    currentDevice = pairedDevices!!.first()
+                } catch (e: Exception) {
+                    Log.e(TAG, "No devices in device list")
+                }
+            }
+        }
+    }
+
     private val updatePerformanceTask = object : Runnable {
         override fun run() {
-            if (bluetoothAdapter?.isEnabled == true) {
-                try {
-                    data = arguments!!
-                    currentDevice = data.get("currentDevice") as BluetoothDevice
-                } catch (e: Exception) {
-                    Log.e(TAG, "Device not yet set, Falling back to default device", e)
-                    try {
-                        val pairedDevices = bluetoothAdapter.bondedDevices
-                        currentDevice = pairedDevices!!.first()
-                    } catch (e: Exception) {
-                        Log.e(TAG, "No devices in device list")
-                    }
-                }
-                try {
-                    CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error Connecting to Server: ", e)
-                }
+            try {
+                CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error Connecting to Server: ", e)
             }
             mainHandler.postDelayed(this, 2000)
         }
@@ -177,6 +179,7 @@ class PerformanceFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        checkBtDevices()
         mainHandler.post(updatePerformanceTask)
     }
 }

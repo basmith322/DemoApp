@@ -6,17 +6,19 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.setup.ui.ProtocolActivity
 import kotlin.system.exitProcess
 
 class BluetoothSetupActivity : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         if (bluetoothAdapter?.isEnabled == true) {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, ProtocolActivity::class.java))
+            finish()
             //If it is not enabled, bring up the alert to ask the user to enable BT or exit
         }
         super.onCreate(savedInstanceState)
@@ -31,7 +33,8 @@ class BluetoothSetupActivity : AppCompatActivity() {
     private fun showAlert() {
         //If BT is already enabled, don't prompt the user
         if (bluetoothAdapter?.isEnabled == true) {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, ProtocolActivity::class.java))
+            finish()
             //If it is not enabled, bring up the alert to ask the user to enable BT or exit
         } else {
             val builder = AlertDialog.Builder(this)
