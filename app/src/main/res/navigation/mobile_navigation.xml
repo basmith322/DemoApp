@@ -33,7 +33,7 @@
         tools:layout="@layout/sign_out_fragment" />
     <fragment
         android:id="@+id/navigation_Bluetooth"
-        android:name="com.example.demoapp.ui.bluetoothCommandManagement.BluetoothFragment"
+        android:name="com.example.demoapp.ui.bluetooth.BluetoothSettingsFragment"
         android:label="BluetoothFragment" />
     <fragment
         android:id="@+id/navigation_Faults"

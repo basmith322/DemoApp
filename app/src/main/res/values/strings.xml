@@ -25,11 +25,13 @@
     <string name="txtOptions">Additional</string>
     <string name="btnRetrieveLog">Retrieve Logs</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
-    <string name="txtSelectDevice">Select Device</string>
+    <string name="txtSelectDevice">Connect To Device</string>
     <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again.</string>
     <string name="btnRetry">Retry</string>
     <string name="bluetoothPref"> </string>
     <string name="txtFaultCodes">Fault Codes</string>
     <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>
     <string name="btnFindProtocol">Find Protocol</string>
+    <string name="preference_file_key" />
+    <string name="savedStarted" />
 </resources>

@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.demoapp.R
-import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.ui.setup.ui.ProtocolActivity
 import kotlin.system.exitProcess
 

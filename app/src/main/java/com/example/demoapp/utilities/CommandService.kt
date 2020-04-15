@@ -1,6 +1,7 @@
 package com.example.demoapp.utilities
 
 import android.bluetooth.BluetoothDevice
+import com.example.demoapp.ui.bluetooth.BluetoothSettingsViewModel
 import com.example.demoapp.ui.bluetoothCommandManagement.*
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
 import com.example.demoapp.ui.faultCodes.FaultCodesViewModel
@@ -31,5 +32,9 @@ class CommandService {
 
     fun connectToServerProtocol(protocolViewModel: ProtocolViewModel, device: BluetoothDevice) {
         ProtocolCommandSender(device, protocolViewModel).start()
+    }
+
+    fun connectoToServerBTSettings(bluetoothSettingsViewModel: BluetoothSettingsViewModel, device: BluetoothDevice) {
+        BTSettingsCommandSender(device,bluetoothSettingsViewModel).start()
     }
 }

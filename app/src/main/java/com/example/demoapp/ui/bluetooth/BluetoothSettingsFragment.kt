@@ -1,7 +1,8 @@
-package com.example.demoapp.ui.bluetoothCommandManagement
+package com.example.demoapp.ui.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,23 +11,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 import com.example.demoapp.ui.performance.PerformanceFragment
+import com.example.demoapp.utilities.CommandService
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+
 const val REQUEST_ENABLE_BT = 1
-class BluetoothFragment : Fragment() {
+class BluetoothSettingsFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnPair: Button
     private lateinit var navBar: BottomNavigationView
     private lateinit var currentDevice: BluetoothDevice
     private lateinit var data: Bundle
+    private val bluetoothSettingsViewModel: BluetoothSettingsViewModel by viewModels()
+    private lateinit var progressBar: ProgressBar
+    private lateinit var viewModel: BluetoothSettingsViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_bluetooth, container, false)
+        val root = inflater.inflate(R.layout.bluetooth_settings_fragment, container, false)
+
+        progressBar = root.findViewById(R.id.progressBar_BTSettings)
+        progressBar.visibility = View.INVISIBLE
+
         navBar = activity!!.findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
 
@@ -46,23 +59,40 @@ class BluetoothFragment : Fragment() {
             )
         }
 
-        Thread.sleep(1000)
+        Thread.sleep(500)
         val spinner: Spinner = root.findViewById(R.id.spnDevices)
         pairedDevices(spinner)
         //endregion
 
         btnPair = root.findViewById(R.id.btnSelectDevice)
-        btnPair.setOnClickListener { sendFragment(data) }
+        btnPair.setOnClickListener { tryConnect() }
+
+        val protocolObserver = Observer<String> { currentProtocolFromOBD ->
+            if (currentProtocolFromOBD == "OK") {
+                val perfFragment = PerformanceFragment()
+                val fragmentManager = parentFragmentManager
+                perfFragment.arguments = data
+                fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment).commit()
+            } else {
+                Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
+            }
+        }
+        bluetoothSettingsViewModel.returnedProtocol.observe(viewLifecycleOwner, protocolObserver)
 
         return root
     }
 
-    private fun sendFragment(data: Bundle) {
-        Toast.makeText(context, "Device Selected: ${currentDevice.name}", Toast.LENGTH_LONG).show()
-        val perfFragment = PerformanceFragment()
-        val fragmentManager = parentFragmentManager
-        perfFragment.arguments = data
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment).commit()
+    private fun tryConnect() {
+        progressBar.visibility = View.VISIBLE
+        try{
+            CommandService().connectoToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
+            Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
+
+        }catch (e: java.lang.Exception){
+            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
+            progressBar.visibility = View.INVISIBLE
+            Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
+        }
     }
 
     private fun pairedDevices(spinner: Spinner) {
@@ -109,9 +139,19 @@ class BluetoothFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        progressBar.visibility = View.INVISIBLE
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         navBar.visibility = View.VISIBLE
         btnPair.visibility = View.INVISIBLE
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(bluetoothSettingsViewModel::class.java)
     }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,11 +15,12 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.MainActivity
 import com.example.demoapp.R
-import com.example.demoapp.ui.bluetoothCommandManagement.REQUEST_ENABLE_BT
+import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
+
 
 class ProtocolFragment : Fragment() {
     private val protocolViewModel: ProtocolViewModel by viewModels()
@@ -27,11 +29,30 @@ class ProtocolFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var progressBar: ProgressBar
 
+
     companion object {
         fun newInstance() = ProtocolFragment()
     }
 
     private lateinit var viewModel: ProtocolViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        var previouslyStarted: Boolean = sharedPref.getBoolean("started", false)
+        if (!previouslyStarted) {
+            with (sharedPref.edit()){
+                previouslyStarted = true
+                putBoolean("started",previouslyStarted)
+                apply()
+            }
+        } else {
+            val started = sharedPref.getBoolean("started", true)
+            if (started) {
+                startActivity(Intent(context, MainActivity::class.java))
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -133,12 +154,19 @@ class ProtocolFragment : Fragment() {
         try {
             CommandService().connectToServerProtocol(protocolViewModel, currentDevice)
         } catch (e: Exception) {
+            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
+            progressBar.visibility = View.INVISIBLE
             Log.e(TAG, "Error Connecting to Server: ", e)
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        progressBar.visibility = View.INVISIBLE
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ProtocolViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
     }
 }
