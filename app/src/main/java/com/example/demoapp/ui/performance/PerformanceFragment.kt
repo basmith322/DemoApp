@@ -43,41 +43,40 @@ class PerformanceFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_performance, container, false)
 
         val speedometer: SpeedometerGauge
-
-        // Customize SpeedometerGauge
         speedometer = root.findViewById(R.id.speedometer)
 
+        // Customize SpeedometerGauge
         speedometer.labelConverter =
             SpeedometerGauge.LabelConverter { progress, maxProgress -> (progress.roundToInt()).toString() }
         speedometer.maxSpeed = 220.0
         speedometer.majorTickStep = 10.0
-        speedometer.minorTicks = 2
-
         speedometer.addColoredRange(30.0, 100.0, Color.GREEN)
         speedometer.addColoredRange(100.0, 150.0, Color.YELLOW)
         speedometer.addColoredRange(150.0, 220.0, Color.RED)
 
         val rpmGauge: SpeedometerGauge
-
         rpmGauge = root.findViewById(R.id.rpmGauge)
+
+        // Customize rpmGauge
         rpmGauge.labelConverter =
             SpeedometerGauge.LabelConverter { progress, maxProgress -> (progress.roundToInt()).toString() }
         rpmGauge.maxSpeed = 9000.0
         rpmGauge.majorTickStep = 1000.0
-        rpmGauge.minorTicks = 100
-
         rpmGauge.addColoredRange(0.0, 4000.0, Color.GREEN)
         rpmGauge.addColoredRange(4000.0, 6000.0, Color.YELLOW)
         rpmGauge.addColoredRange(6000.0, 9000.0, Color.RED)
 
         val psiGauge: SpeedometerGauge
-
         psiGauge = root.findViewById(R.id.psiGauge)
+
+        // Customize psiGauge
         psiGauge.labelConverter =
             SpeedometerGauge.LabelConverter { progress, maxProgress -> (progress.roundToInt()).toString() }
-        psiGauge.maxSpeed = 10.0
-        psiGauge.majorTickStep = 2.0
-
+        psiGauge.maxSpeed = 30.0
+        psiGauge.majorTickStep = 10.0
+        psiGauge.addColoredRange(0.0, 10.0, Color.GREEN)
+        psiGauge.addColoredRange(10.0, 20.0, Color.YELLOW)
+        psiGauge.addColoredRange(20.0, 30.0, Color.RED)
 
         //Current Speed Title
         val textCurrentSpeedTitle: TextView = root.findViewById(R.id.textView_CurrentSpeedTitle)
@@ -86,10 +85,10 @@ class PerformanceFragment : Fragment() {
         })
 
         //Current speed value returned from OBD
-        val speedObserver = Observer<String> { currentSpeedFromOBD ->
+        val speedObserver = Observer<Int> { currentSpeedFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_CurrentSpeed.text = currentSpeedFromOBD
-//            speedometer.speed = currentSpeedFromOBD.toDouble()
+            textView_CurrentSpeed.text = currentSpeedFromOBD.toString() + " MPH"
+            speedometer.speed = currentSpeedFromOBD.toDouble()
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)
 
@@ -102,7 +101,7 @@ class PerformanceFragment : Fragment() {
         //Current RPM value returned from ODB
         val rpmObserver = Observer<Int> { currentRPMFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_RPM.text = "$currentRPMFromOBD RPM"
+            textView_RPM.text = currentRPMFromOBD.toString() + " RPM"
             rpmGauge.speed = currentRPMFromOBD.toDouble()
         }
         performanceViewModel.currentRPM.observe(viewLifecycleOwner, rpmObserver)
@@ -116,7 +115,7 @@ class PerformanceFragment : Fragment() {
         //Current Boost Pressure value returned from OBD
         val boostObserver = Observer<Int> { currentBoostFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_PSI.text = currentBoostFromOBD.toString()
+            textView_PSI.text = currentBoostFromOBD.toString() + " PSI"
             psiGauge.speed = currentBoostFromOBD.toDouble()
         }
         performanceViewModel.currentBoost.observe(viewLifecycleOwner, boostObserver)

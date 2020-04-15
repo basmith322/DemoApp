@@ -50,6 +50,7 @@ class ProtocolFragment : Fragment() {
             val started = sharedPref.getBoolean("started", true)
             if (started) {
                 startActivity(Intent(context, MainActivity::class.java))
+                activity!!.finish()
             }
         }
     }
@@ -79,10 +80,11 @@ class ProtocolFragment : Fragment() {
 
         val builder = AlertDialog.Builder(context)
         val alert = builder.create()
-        alert.setTitle("DigiDash Setup")
+        alert.setTitle("First Time Setup")
         alert.setMessage(
             "As part of the setup process, DigiDash will now attempt to automatically find the correct OBD protocol for your device." +
-                    "Please select the OBD device from the list and then tap the Find Protocol button"
+                    "\nPlease select the OBD device from the list and then tap the Find Protocol button. " +
+                    "\nYou can add or change your device in the Bluetooth page later if required"
         )
         alert.setButton(
             "Continue"
@@ -100,6 +102,7 @@ class ProtocolFragment : Fragment() {
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             if (currentProtocolFromOBD == "OK") {
                 startActivity(Intent(context, MainActivity::class.java))
+                activity!!.finish()
             } else {
                 Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
             }
@@ -153,6 +156,7 @@ class ProtocolFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
         try {
             CommandService().connectToServerProtocol(protocolViewModel, currentDevice)
+            Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
             progressBar.visibility = View.INVISIBLE

@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.ui.setup.BluetoothSetupActivity
 import com.example.demoapp.utilities.CloseKeyboard
@@ -35,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
 
             if (firebaseAuth.currentUser != null) {
-                startActivity(Intent(this@LoginActivity, BluetoothSetupActivity::class.java))
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 finish()
             }
         } else {

@@ -27,19 +27,19 @@ class ConsumptionCommandSender (device: BluetoothDevice, providedViewModel: Cons
 
         val consumptionCommand = ConsumptionRateCommand()
         consumptionCommand.run(inputStream, outputStream)
-        val consumptionResult = consumptionCommand.calculatedResult + " MPG"
+        val consumptionResult = consumptionCommand.formattedResult
 
         val airFuelRatioCommand = AirFuelRatioCommand()
         airFuelRatioCommand.run(inputStream,outputStream)
-        val airFuelRatioResult = airFuelRatioCommand.formattedResult
+        val airFuelRatioResult = airFuelRatioCommand.result
 
         val pressureCommand = FuelPressureCommand()
         pressureCommand.run(inputStream,outputStream)
-        val pressureResult = pressureCommand.calculatedResult + " PSI"
+        val pressureResult = pressureCommand.imperialUnit.toInt()
 
         val fuelLevelCommand = FuelLevelCommand()
         fuelLevelCommand.run(inputStream,outputStream)
-        val fuelLevelResult = fuelLevelCommand.formattedResult
+        val fuelLevelResult = fuelLevelCommand.fuelLevel
 
         val cViewModel = viewModel
         cViewModel.currentConsumption.postValue(consumptionResult)

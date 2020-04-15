@@ -24,12 +24,12 @@ class ConsumptionViewModel : ViewModel() {
     }
 
     private val _textRangeTitle = MutableLiveData<String>().apply {
-        value = "Range"
+        value = "Fuel Level"
     }
     val textRangeTitle: LiveData<String> = _textRangeTitle
 
     val fuelLevel by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Float>()
     }
 
     private val _textFuelPressureTitle = MutableLiveData<String>().apply {
@@ -38,7 +38,7 @@ class ConsumptionViewModel : ViewModel() {
     val textFuelPressureTitle: LiveData<String> = _textFuelPressureTitle
 
     val currentFuelPressure by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Int>()
     }
 
     private val _textAirFuelRatioTitle = MutableLiveData<String>().apply {

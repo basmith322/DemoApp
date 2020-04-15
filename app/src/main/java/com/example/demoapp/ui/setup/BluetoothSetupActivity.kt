@@ -15,6 +15,7 @@ class BluetoothSetupActivity : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //If BT is already enabled, don't prompt the user
         setTheme(R.style.AppTheme)
         if (bluetoothAdapter?.isEnabled == true) {
             startActivity(Intent(this, ProtocolActivity::class.java))

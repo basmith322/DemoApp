@@ -34,7 +34,7 @@ class CommandService {
         ProtocolCommandSender(device, protocolViewModel).start()
     }
 
-    fun connectoToServerBTSettings(bluetoothSettingsViewModel: BluetoothSettingsViewModel, device: BluetoothDevice) {
+    fun connectToServerBTSettings(bluetoothSettingsViewModel: BluetoothSettingsViewModel, device: BluetoothDevice) {
         BTSettingsCommandSender(device,bluetoothSettingsViewModel).start()
     }
 }

@@ -85,9 +85,8 @@ class BluetoothSettingsFragment : Fragment() {
     private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
         try{
-            CommandService().connectoToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
+            CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
             Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
-
         }catch (e: java.lang.Exception){
             Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
             progressBar.visibility = View.INVISIBLE

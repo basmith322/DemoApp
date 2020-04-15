@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
-        <activity android:name=".ui.test"></activity>
         <activity android:name=".ui.setup.ui.ProtocolActivity" />
         <activity
             android:name=".ui.setup.BluetoothSetupActivity"
