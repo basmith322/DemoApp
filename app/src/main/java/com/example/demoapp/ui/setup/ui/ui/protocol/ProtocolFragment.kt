@@ -7,6 +7,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,7 @@ class ProtocolFragment : Fragment() {
     private lateinit var btnFindProtocol: Button
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var progressBar: ProgressBar
-
+    private var hasConnected: Boolean = false
 
     companion object {
         fun newInstance() = ProtocolFragment()
@@ -41,9 +42,9 @@ class ProtocolFragment : Fragment() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         var previouslyStarted: Boolean = sharedPref.getBoolean("started", false)
         if (!previouslyStarted) {
-            with (sharedPref.edit()){
+            with(sharedPref.edit()) {
                 previouslyStarted = true
-                putBoolean("started",previouslyStarted)
+                putBoolean("started", previouslyStarted)
                 apply()
             }
         } else {
@@ -97,16 +98,20 @@ class ProtocolFragment : Fragment() {
         pairedDevices(spinner)
 
         btnFindProtocol = root.findViewById(R.id.btnTryProtocol)
-        btnFindProtocol.setOnClickListener { updateProtocolTask() }
+        btnFindProtocol.setOnClickListener { tryConnect() }
 
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             if (currentProtocolFromOBD == "OK") {
+                Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
                 startActivity(Intent(context, MainActivity::class.java))
                 activity!!.finish()
-            } else {
-                Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
             }
+            Handler().postDelayed({
+                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+                progressBar.visibility = View.INVISIBLE
+            }, 6000)
         }
+
         protocolViewModel.returnedProtocol.observe(viewLifecycleOwner, protocolObserver)
 
         return root
@@ -152,16 +157,25 @@ class ProtocolFragment : Fragment() {
         }
     }
 
-    private fun updateProtocolTask() {
+    private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
+        Handler().postDelayed({
+            if (!hasConnected){
+                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+                progressBar.visibility = View.INVISIBLE
+            }
+        }, 6000)
         try {
             CommandService().connectToServerProtocol(protocolViewModel, currentDevice)
-            Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
             progressBar.visibility = View.INVISIBLE
             Log.e(TAG, "Error Connecting to Server: ", e)
         }
+        Handler().postDelayed({
+            Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
+            progressBar.visibility = View.INVISIBLE
+        }, 6000)
     }
 
     override fun onPause() {

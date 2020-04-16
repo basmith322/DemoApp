@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ class BluetoothSettingsFragment : Fragment() {
     private val bluetoothSettingsViewModel: BluetoothSettingsViewModel by viewModels()
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: BluetoothSettingsViewModel
+    private var hasConnected: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,24 +71,29 @@ class BluetoothSettingsFragment : Fragment() {
 
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             if (currentProtocolFromOBD == "OK") {
+                hasConnected = true
+                Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
                 val perfFragment = PerformanceFragment()
                 val fragmentManager = parentFragmentManager
                 perfFragment.arguments = data
                 fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment).commit()
-            } else {
-                Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
+                fragmentManager.beginTransaction().remove(this)
             }
         }
         bluetoothSettingsViewModel.returnedProtocol.observe(viewLifecycleOwner, protocolObserver)
-
         return root
     }
 
     private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
+        Handler().postDelayed({
+            if (!hasConnected){
+                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+                progressBar.visibility = View.INVISIBLE
+            }
+        }, 6000)
         try{
             CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
-            Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
         }catch (e: java.lang.Exception){
             Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
             progressBar.visibility = View.INVISIBLE

@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavigationView.setupWithNavController(navController)
+        bottomNavigationView.menu.findItem(R.id.navigation_Perf).isChecked = true
         navView.setupWithNavController(navController)
     }
 
