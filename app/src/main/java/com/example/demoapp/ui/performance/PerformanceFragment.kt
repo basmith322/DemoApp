@@ -42,20 +42,18 @@ class PerformanceFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_performance, container, false)
 
-        val speedometer: SpeedometerGauge
-        speedometer = root.findViewById(R.id.speedometer)
+        val speedometer: SpeedometerGauge = root.findViewById(R.id.speedometer)
 
         // Customize SpeedometerGauge
         speedometer.labelConverter =
             SpeedometerGauge.LabelConverter { progress, maxProgress -> (progress.roundToInt()).toString() }
         speedometer.maxSpeed = 220.0
-        speedometer.majorTickStep = 10.0
+        speedometer.majorTickStep = 20.0
         speedometer.addColoredRange(30.0, 100.0, Color.GREEN)
         speedometer.addColoredRange(100.0, 150.0, Color.YELLOW)
         speedometer.addColoredRange(150.0, 220.0, Color.RED)
 
-        val rpmGauge: SpeedometerGauge
-        rpmGauge = root.findViewById(R.id.rpmGauge)
+        val rpmGauge: SpeedometerGauge = root.findViewById(R.id.rpmGauge)
 
         // Customize rpmGauge
         rpmGauge.labelConverter =
@@ -66,8 +64,7 @@ class PerformanceFragment : Fragment() {
         rpmGauge.addColoredRange(4000.0, 6000.0, Color.YELLOW)
         rpmGauge.addColoredRange(6000.0, 9000.0, Color.RED)
 
-        val psiGauge: SpeedometerGauge
-        psiGauge = root.findViewById(R.id.psiGauge)
+        val psiGauge: SpeedometerGauge = root.findViewById(R.id.psiGauge)
 
         // Customize psiGauge
         psiGauge.labelConverter =

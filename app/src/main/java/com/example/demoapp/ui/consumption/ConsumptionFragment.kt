@@ -99,8 +99,8 @@ class ConsumptionFragment : Fragment() {
         })
 
         //Current Fuel pressure value returned from OBD
-        val fuelPressureObserver = Observer<Int> { currentFuelPressureFromOBD ->
-            textView_FuelPressure.text = currentFuelPressureFromOBD.toString()
+        val fuelPressureObserver = Observer<String> { currentFuelPressureFromOBD ->
+            textView_FuelPressure.text = currentFuelPressureFromOBD
         }
         consumptionViewModel.currentFuelPressure.observe(viewLifecycleOwner, fuelPressureObserver)
 

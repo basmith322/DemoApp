@@ -27,19 +27,19 @@ class TemperaturesCommandSender(device: BluetoothDevice, providedViewModel: Temp
 
         val coolantTempCommand = EngineCoolantTemperatureCommand()
         coolantTempCommand.run(inputStream,outputStream)
-        val coolantTempResult = coolantTempCommand.calculatedResult + "C"
+        val coolantTempResult = coolantTempCommand.temperature
 
         val airIntakeTempCommand = AirIntakeTemperatureCommand()
         airIntakeTempCommand.run(inputStream,outputStream)
-        val airIntakeResult = airIntakeTempCommand.calculatedResult + "C"
+        val airIntakeResult = airIntakeTempCommand.temperature
 
         val ambientAirTempCommand = AmbientAirTemperatureCommand()
         ambientAirTempCommand.run(inputStream,outputStream)
-        val ambientAirTempResult = ambientAirTempCommand.calculatedResult + "C"
+        val ambientAirTempResult = ambientAirTempCommand.temperature
 
         val oilTempCommand = OilTempCommand()
         oilTempCommand.run(inputStream,outputStream)
-        val oilTempResult = oilTempCommand.calculatedResult + "C"
+        val oilTempResult = oilTempCommand.temperature
 
         val tViewModel = viewModel
         tViewModel.coolantTemp.postValue(coolantTempResult)

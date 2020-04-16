@@ -31,11 +31,11 @@ class ConsumptionCommandSender (device: BluetoothDevice, providedViewModel: Cons
 
         val airFuelRatioCommand = AirFuelRatioCommand()
         airFuelRatioCommand.run(inputStream,outputStream)
-        val airFuelRatioResult = airFuelRatioCommand.result
+        val airFuelRatioResult = airFuelRatioCommand.formattedResult
 
         val pressureCommand = FuelPressureCommand()
         pressureCommand.run(inputStream,outputStream)
-        val pressureResult = pressureCommand.imperialUnit.toInt()
+        val pressureResult = pressureCommand.formattedResult
 
         val fuelLevelCommand = FuelLevelCommand()
         fuelLevelCommand.run(inputStream,outputStream)

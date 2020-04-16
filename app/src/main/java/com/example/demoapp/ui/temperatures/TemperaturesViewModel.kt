@@ -14,7 +14,7 @@ class TemperaturesViewModel : ViewModel() {
 
     //Current coolant temp value returned from OBD
     val coolantTemp by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Float>()
     }
 
 
@@ -26,7 +26,7 @@ class TemperaturesViewModel : ViewModel() {
 
     //Current Air Intake temp value returned from OBD
     val airIntakeTemp by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Float>()
     }
 
 
@@ -38,7 +38,7 @@ class TemperaturesViewModel : ViewModel() {
 
     //Current Ambient Air Temp value returned from OBD
     val ambientAirTemp by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Float>()
     }
 
 
@@ -50,6 +50,6 @@ class TemperaturesViewModel : ViewModel() {
 
     //Current Oil Temp value returned from OBD
     val oilTemp by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Float>()
     }
 }
