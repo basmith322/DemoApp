@@ -50,6 +50,7 @@ dependencies {
     implementation 'com.github.pires:obd-java-api:1.0'
     implementation 'com.cardiomood.android:android-widgets:0.1.1'
     implementation 'com.github.anastr:speedviewlib:1.5.2'
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

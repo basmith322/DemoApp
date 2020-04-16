@@ -172,10 +172,6 @@ class ProtocolFragment : Fragment() {
             progressBar.visibility = View.INVISIBLE
             Log.e(TAG, "Error Connecting to Server: ", e)
         }
-        Handler().postDelayed({
-            Toast.makeText(context, "OK not received from OBD", Toast.LENGTH_SHORT).show()
-            progressBar.visibility = View.INVISIBLE
-        }, 6000)
     }
 
     override fun onPause() {
