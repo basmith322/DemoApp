@@ -3,7 +3,6 @@ package com.example.demoapp.ui.faultCodes
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
-import android.database.Cursor
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,10 +10,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListAdapter
 import android.widget.ListView
-import android.widget.SimpleCursorAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,7 +30,7 @@ class FaultCodesFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var lv: ListView
 
-    private var codeDescriptions: Cursor? = null
+    private lateinit var codeDescriptions: MutableList<String>
     private var db: OBDDataBase? = null
 
     private lateinit var code: Array<String>
@@ -49,10 +48,10 @@ class FaultCodesFragment : Fragment() {
         db = OBDDataBase(context, code)
         codeDescriptions = db!!.getDBCodes
 
-        val adapter: ListAdapter = SimpleCursorAdapter(
-            context,
+        val adapter: ListAdapter = ArrayAdapter(
+            context!!,
             android.R.layout.simple_list_item_1,
-            codeDescriptions, arrayOf("desc"), intArrayOf(android.R.id.text1), 0
+            codeDescriptions
         )
         lv.adapter = adapter
     }
@@ -116,10 +115,5 @@ class FaultCodesFragment : Fragment() {
         checkBtDevices()
         super.onResume()
         mainHandler.post(updateFaultsTask)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        codeDescriptions?.close()
     }
 }

@@ -1,9 +1,11 @@
 package com.example.demoapp.data
 
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteQueryBuilder
+import android.text.TextUtils
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OBDDataBase(context: Context?, faultCodesFromOBD: Array<String>) : SQLiteAssetHelper(
     context,
@@ -13,22 +15,29 @@ class OBDDataBase(context: Context?, faultCodesFromOBD: Array<String>) : SQLiteA
 ) {
     private val faultCodesArray = faultCodesFromOBD
     private val i = 0
-    val getDBCodes: Cursor
+    val getDBCodes: MutableList<String>
         get() {
             faultCodesArray.contentToString().replace('[', '(').replace(']', ')')
 
+            var codeList = ArrayList<String>()
             val db = readableDatabase
             val qb = SQLiteQueryBuilder()
-            val sqlSelect = arrayOf("0 _id", "desc")
+            val sqlSelect = arrayOf("desc")
             val sqlTables = "codes"
+            val sqlWhere = "id IN (" +
+                    TextUtils.join(",", Collections.nCopies(faultCodesArray.size - 1, "?")) +
+                    ")"
             qb.tables = sqlTables
 
             val c = qb.query(
-                db, sqlSelect, "id= $faultCodesArray", null, null,
+                db, sqlSelect, sqlWhere, faultCodesArray, null,
                 null, null, null
             )
-            c.moveToFirst()
-            return c
+            while (c.moveToNext()) {
+                codeList.add(c.getString(0))
+            }
+            c.close()
+            return codeList
         }
 
     companion object {

@@ -28,8 +28,9 @@ class FaultCodesCommandSender(device: BluetoothDevice, providedViewModel: FaultC
 
         val troubleCodesCommand = TroubleCodesCommand()
         troubleCodesCommand.run(inputStream,outputStream)
-        val troubleCodesResult = troubleCodesCommand.formattedResult.split("\n").toTypedArray()
+        var troubleCodesResult = troubleCodesCommand.formattedResult.split("\n")
+        troubleCodesResult = troubleCodesResult.dropLast(1)
         val fViewModel = viewModel
-      fViewModel.faultCode.postValue(troubleCodesResult)
+      fViewModel.faultCode.postValue(troubleCodesResult.toTypedArray())
     }
 }
