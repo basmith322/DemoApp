@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 
 class FaultCodesViewModel : ViewModel() {
     val faultCode by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<Array<String>>()
     }
 
     val returnedProtocol by lazy {

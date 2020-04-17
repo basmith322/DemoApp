@@ -35,7 +35,7 @@ class FaultCodesFragment : Fragment() {
     private var codeDescriptions: Cursor? = null
     private var db: OBDDataBase? = null
 
-    var code: String = "P0100"
+    private lateinit var code: Array<String>
     private lateinit var btn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,14 +47,13 @@ class FaultCodesFragment : Fragment() {
     }
 
     private fun checkFaultCodes() {
-        db =  OBDDataBase(context, code);
+        db = OBDDataBase(context, code);
         codeDescriptions = db!!.getDBCodes
-        codeDescriptions?.close()
 
         val adapter: ListAdapter = SimpleCursorAdapter(
             context,
             android.R.layout.simple_list_item_1,
-            codeDescriptions, arrayOf("desc"), intArrayOf(android.R.id.text1)
+            codeDescriptions, arrayOf("desc"), intArrayOf(android.R.id.text1), 0
         )
         lv.adapter = adapter
     }
@@ -66,10 +65,10 @@ class FaultCodesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fault_codes_fragment, container, false)
 
         //fault code returned from OBD
-        val faultObserver = Observer<String> { currentFaultFromOBD ->
+        val faultObserver = Observer<Array<String>> { currentFaultFromOBD ->
             // Update the UI, in this case, a TextView.
 //            textView_currentFault.text = currentFaultFromOBD
-//            code = currentFaultFromOBD
+           code = currentFaultFromOBD
         }
         faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
 
@@ -118,5 +117,10 @@ class FaultCodesFragment : Fragment() {
         checkBtDevices()
         super.onResume()
         mainHandler.post(updateFaultsTask)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        codeDescriptions?.close()
     }
 }
