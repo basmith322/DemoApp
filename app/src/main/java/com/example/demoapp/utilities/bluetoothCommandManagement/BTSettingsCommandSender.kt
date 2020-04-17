@@ -1,4 +1,4 @@
-package com.example.demoapp.ui.bluetoothCommandManagement
+package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues

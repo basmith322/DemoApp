@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.faultCodes
 
-import android.app.ListActivity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
@@ -31,19 +30,16 @@ class FaultCodesFragment : Fragment() {
     private lateinit var data: Bundle
     private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private lateinit var lv: ListView
 
-    private var dbCodes: Cursor? = null
+    private var codeDescriptions: Cursor? = null
     private var db: OBDDataBase? = null
 
-    var code: String = ""
+    var code: String = "P0100"
     private lateinit var btn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        db =  OBDDataBase(context);
-//        dbCodes = db!!.codes
-//
 
         checkBtDevices()
         mainHandler = Handler(Looper.getMainLooper())
@@ -51,11 +47,16 @@ class FaultCodesFragment : Fragment() {
     }
 
     private fun checkFaultCodes() {
-//        val storedCode = obdDataBaseAdapter.getSingleEntry(code)
-//
-//        if (code == storedCode) {
-//            textView_currentFault.text = storedCode
-//        }
+        db =  OBDDataBase(context, code);
+        codeDescriptions = db!!.getDBCodes
+        codeDescriptions?.close()
+
+        val adapter: ListAdapter = SimpleCursorAdapter(
+            context,
+            android.R.layout.simple_list_item_1,
+            codeDescriptions, arrayOf("desc"), intArrayOf(android.R.id.text1)
+        )
+        lv.adapter = adapter
     }
 
     override fun onCreateView(
@@ -68,12 +69,14 @@ class FaultCodesFragment : Fragment() {
         val faultObserver = Observer<String> { currentFaultFromOBD ->
             // Update the UI, in this case, a TextView.
 //            textView_currentFault.text = currentFaultFromOBD
-            code = currentFaultFromOBD
+//            code = currentFaultFromOBD
         }
         faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
 
         btn = root.findViewById(R.id.button_Test)
         btn.setOnClickListener { checkFaultCodes() }
+
+        lv = root.findViewById(R.id.listView_Codes)
 
         return root
     }

@@ -1,10 +1,9 @@
-package com.example.demoapp.ui.bluetoothCommandManagement
+package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
 import android.util.Log
 import com.example.demoapp.ui.faultCodes.FaultCodesViewModel
-import com.github.pires.obd.commands.control.PermanentTroubleCodesCommand
 import com.github.pires.obd.commands.control.TroubleCodesCommand
 import com.github.pires.obd.commands.protocol.ObdResetCommand
 import com.github.pires.obd.commands.protocol.TimeoutCommand
@@ -29,7 +28,7 @@ class FaultCodesCommandSender(device: BluetoothDevice, providedViewModel: FaultC
 
         val troubleCodesCommand = TroubleCodesCommand()
         troubleCodesCommand.run(inputStream,outputStream)
-        val troubleCodesResult = troubleCodesCommand.formattedResult
+        val troubleCodesResult = troubleCodesCommand.resultUnit
 
         val fViewModel = viewModel
         fViewModel.faultCode.postValue(troubleCodesResult)
