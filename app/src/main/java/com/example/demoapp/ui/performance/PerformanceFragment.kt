@@ -84,7 +84,7 @@ class PerformanceFragment : Fragment() {
         //Current speed value returned from OBD
         val speedObserver = Observer<Int> { currentSpeedFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_CurrentSpeed.text = currentSpeedFromOBD.toString() + " MPH"
+            textView_CurrentSpeed.text = "$currentSpeedFromOBD MPH"
             speedometer.speed = currentSpeedFromOBD.toDouble()
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)
@@ -98,7 +98,7 @@ class PerformanceFragment : Fragment() {
         //Current RPM value returned from ODB
         val rpmObserver = Observer<Int> { currentRPMFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_RPM.text = currentRPMFromOBD.toString() + " RPM"
+            textView_RPM.text = "$currentRPMFromOBD RPM"
             rpmGauge.speed = currentRPMFromOBD.toDouble()
         }
         performanceViewModel.currentRPM.observe(viewLifecycleOwner, rpmObserver)
@@ -112,7 +112,7 @@ class PerformanceFragment : Fragment() {
         //Current Boost Pressure value returned from OBD
         val boostObserver = Observer<Int> { currentBoostFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_PSI.text = currentBoostFromOBD.toString() + " PSI"
+            textView_PSI.text = "$currentBoostFromOBD PSI"
             psiGauge.speed = currentBoostFromOBD.toDouble()
         }
         performanceViewModel.currentBoost.observe(viewLifecycleOwner, boostObserver)

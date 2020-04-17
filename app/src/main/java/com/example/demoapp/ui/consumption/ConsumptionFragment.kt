@@ -18,7 +18,6 @@ import com.cardiomood.android.controls.gauge.SpeedometerGauge
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
 import kotlinx.android.synthetic.main.fragment_consumption.*
-import kotlinx.android.synthetic.main.fragment_performance.*
 import kotlin.math.roundToInt
 
 class ConsumptionFragment : Fragment() {

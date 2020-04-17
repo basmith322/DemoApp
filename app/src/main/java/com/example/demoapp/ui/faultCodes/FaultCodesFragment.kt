@@ -21,7 +21,6 @@ import androidx.lifecycle.Observer
 import com.example.demoapp.R
 import com.example.demoapp.data.OBDDataBase
 import com.example.demoapp.utilities.CommandService
-import kotlinx.android.synthetic.main.fault_codes_fragment.*
 
 
 class FaultCodesFragment : Fragment() {
@@ -47,7 +46,7 @@ class FaultCodesFragment : Fragment() {
     }
 
     private fun checkFaultCodes() {
-        db = OBDDataBase(context, code);
+        db = OBDDataBase(context, code)
         codeDescriptions = db!!.getDBCodes
 
         val adapter: ListAdapter = SimpleCursorAdapter(

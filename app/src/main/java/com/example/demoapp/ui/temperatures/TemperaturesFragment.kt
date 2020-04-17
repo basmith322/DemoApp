@@ -18,7 +18,6 @@ import androidx.lifecycle.Observer
 import com.cardiomood.android.controls.gauge.SpeedometerGauge
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
-import kotlinx.android.synthetic.main.fragment_performance.*
 import kotlinx.android.synthetic.main.fragment_temperatures.*
 import kotlin.math.roundToInt
 
@@ -86,7 +85,7 @@ class TemperaturesFragment : Fragment() {
 
         //Current Coolant Temp value returned from OBD
         val coolantObserver = Observer<Float> { currentCoolantTempFromOBD ->
-            textView_CoolantTemp.text = currentCoolantTempFromOBD.toString() + " C"
+            textView_CoolantTemp.text = "$currentCoolantTempFromOBD C"
             coolantGauge.speed = currentCoolantTempFromOBD.toDouble()
         }
         temperaturesViewModel.coolantTemp.observe(viewLifecycleOwner, coolantObserver)
@@ -100,7 +99,7 @@ class TemperaturesFragment : Fragment() {
 
         //Air Intake Temp value returned from OBD
         val airIntakeTempObserver = Observer<Float> { airIntakeTempFromOBD ->
-            textView_AirIntakeTemp.text = airIntakeTempFromOBD.toString() + " C"
+            textView_AirIntakeTemp.text = "$airIntakeTempFromOBD C"
             airIntakeTemp.speed = airIntakeTempFromOBD.toDouble()
         }
         temperaturesViewModel.airIntakeTemp.observe(viewLifecycleOwner, airIntakeTempObserver)
@@ -114,7 +113,7 @@ class TemperaturesFragment : Fragment() {
 
         //Ambient Air Temp value returned from OBD
         val ambientAirTempObserver = Observer<Float> { ambientAirTempFromOBD ->
-            textView_AmbientAirTemp.text = ambientAirTempFromOBD.toString() + " C"
+            textView_AmbientAirTemp.text = "$ambientAirTempFromOBD C"
             ambientAirTemp.speed = ambientAirTempFromOBD.toDouble()
         }
         temperaturesViewModel.ambientAirTemp.observe(viewLifecycleOwner, ambientAirTempObserver)
@@ -128,7 +127,7 @@ class TemperaturesFragment : Fragment() {
 
         //Oil Temp value returned from OBD
         val oilTempObserver = Observer<Float> { currentOilTempReturnedFromOBD ->
-            textView_OilTemp.text = currentOilTempReturnedFromOBD.toString() + " C"
+            textView_OilTemp.text = "$currentOilTempReturnedFromOBD C"
             oilTemp.speed = currentOilTempReturnedFromOBD.toDouble()
         }
         temperaturesViewModel.oilTemp.observe(viewLifecycleOwner, oilTempObserver)
