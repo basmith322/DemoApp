@@ -10,10 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListAdapter
-import android.widget.ListView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -23,27 +20,61 @@ import com.example.demoapp.utilities.CommandService
 
 class FaultCodesFragment : Fragment() {
     private val faultCodesViewModel: FaultCodesViewModel by viewModels()
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private var db: OBDDataBase? = null
     lateinit var mainHandler: Handler
     private lateinit var data: Bundle
     private lateinit var currentDevice: BluetoothDevice
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var lv: ListView
-
     private lateinit var codeDescriptions: MutableList<String>
-    private var db: OBDDataBase? = null
-
-    private lateinit var code: Array<String>
+    private var code: Array<String> = arrayOf()
     private lateinit var btn: Button
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         checkBtDevices()
         mainHandler = Handler(Looper.getMainLooper())
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val root = inflater.inflate(R.layout.fragment_faults, container, false)
+
+        //Initialize view elements to variables
+        btn = root.findViewById(R.id.button_checkFaults)
+        btn.setOnClickListener { checkFaultCodes() }
+        progressBar = root.findViewById(R.id.progressBar_Faults)
+        progressBar.visibility = View.INVISIBLE
+        lv = root.findViewById(R.id.listView_Codes)
+
+        //Observer to monitor the value returned from the OBD for protocol
+        val faultObserver = Observer<Array<String>> { currentFaultFromOBD ->
+            //set code to the values returned from OBD
+            code = currentFaultFromOBD
+        }
+        faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
+
+        return root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //Stop the handler if the fragment is paused
+        mainHandler.removeCallbacks(updateFaultsTask)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //Check BT is enabled upon resume and start the fault code command sender again
+        checkBtDevices()
+        mainHandler.post(updateFaultsTask)
     }
 
     private fun checkFaultCodes() {
+        //if code isn't empty then compare it against the database and return the results to the list
         if (!code.isNullOrEmpty()) {
             try {
                 db = OBDDataBase(context, code)
@@ -58,42 +89,27 @@ class FaultCodesFragment : Fragment() {
             } catch (e: Exception) {
                 Log.e(TAG, "Could not contact db", e)
             }
+        } else {
+            //If code is empty then inform the user to wait and try again
+            Toast.makeText(context, "No Codes found, please wait and try again", Toast.LENGTH_SHORT)
+                .show()
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_faults, container, false)
-
-        //fault code returned from OBD
-        val faultObserver = Observer<Array<String>> { currentFaultFromOBD ->
-            // Update the UI, in this case, a TextView.
-//            textView_currentFault.text = currentFaultFromOBD
-            code = currentFaultFromOBD
-        }
-        faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
-
-        btn = root.findViewById(R.id.button_Test)
-        btn.setOnClickListener { checkFaultCodes() }
-
-        lv = root.findViewById(R.id.listView_Codes)
-
-        return root
     }
 
     private fun checkBtDevices() {
+        //Check if the bluetooth adapter is enabled and try to use the device stored in data
         if (bluetoothAdapter?.isEnabled == true) {
             try {
                 data = requireArguments()
                 currentDevice = data.get("currentDevice") as BluetoothDevice
             } catch (e: Exception) {
                 Log.e(TAG, "Device not yet set, Falling back to default device", e)
+                //If there is no device in data attempt to use default device
                 try {
                     val pairedDevices = bluetoothAdapter.bondedDevices
                     currentDevice = pairedDevices!!.first()
                 } catch (e: Exception) {
+                    //If there is no device found then log the error
                     Log.e(TAG, "No devices in device list")
                 }
             }
@@ -102,23 +118,16 @@ class FaultCodesFragment : Fragment() {
 
     private val updateFaultsTask = object : Runnable {
         override fun run() {
-            try {
-                CommandService().connectToServerFaults(faultCodesViewModel, currentDevice)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error Connecting to Server: ", e)
+            /*if code is empty then try to perform the command. Stop the handler once the command has run*/
+            if (code.isEmpty()) {
+                try {
+                    CommandService().connectToServerFaults(faultCodesViewModel, currentDevice)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error Connecting to Server: ", e)
+                }
+                mainHandler.removeCallbacksAndMessages(null)
             }
             mainHandler.postDelayed(this, 2000)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mainHandler.removeCallbacks(updateFaultsTask)
-    }
-
-    override fun onResume() {
-        checkBtDevices()
-        super.onResume()
-        mainHandler.post(updateFaultsTask)
     }
 }

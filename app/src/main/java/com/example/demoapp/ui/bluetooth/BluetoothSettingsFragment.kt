@@ -21,6 +21,7 @@ import com.example.demoapp.utilities.CommandService
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 const val REQUEST_ENABLE_BT = 1
+
 class BluetoothSettingsFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnPair: Button
@@ -31,6 +32,7 @@ class BluetoothSettingsFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: BluetoothSettingsViewModel
     private var hasConnected: Boolean = false
+    private lateinit var spinner: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,13 +40,16 @@ class BluetoothSettingsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.bluetooth_settings_fragment, container, false)
 
+        //Initialize view elements to variables
         progressBar = root.findViewById(R.id.progressBar_BTSettings)
         progressBar.visibility = View.INVISIBLE
-
         navBar = requireActivity().findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
+        btnPair = root.findViewById(R.id.btnSelectDevice)
+        btnPair.setOnClickListener { tryConnect() }
+        spinner = root.findViewById(R.id.spnDevices)
+        pairedDevices(spinner)
 
-        //region bluetooth adapter code
         //show a toast notification if the device does not support bluetooth
         if (bluetoothAdapter == null) {
             Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
@@ -53,29 +58,26 @@ class BluetoothSettingsFragment : Fragment() {
 
         //if the device supports bluetooth but adapter is not enabled, request it to be enabled
         if (bluetoothAdapter?.isEnabled == false) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(
-                enableBtIntent,
-                REQUEST_ENABLE_BT
-            )
+            connectBT()
         }
 
-        Thread.sleep(500)
-        val spinner: Spinner = root.findViewById(R.id.spnDevices)
-        pairedDevices(spinner)
-        //endregion
-
-        btnPair = root.findViewById(R.id.btnSelectDevice)
-        btnPair.setOnClickListener { tryConnect() }
-
+        //Observer to monitor the value returned from the OBD for protocol
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
+            //If the protocol returns OK then the connection is successful
             if (currentProtocolFromOBD == "OK") {
                 hasConnected = true
-                Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "Connection to " + currentDevice.name + " successful",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                //Replace the BT fragment with the performance fragment and remove BT fragment
                 val perfFragment = PerformanceFragment()
                 val fragmentManager = parentFragmentManager
                 perfFragment.arguments = data
-                fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment).commit()
+                fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment)
+                    .commit()
                 fragmentManager.beginTransaction().remove(this)
             }
         }
@@ -83,17 +85,48 @@ class BluetoothSettingsFragment : Fragment() {
         return root
     }
 
+    override fun onPause() {
+        super.onPause()
+        progressBar.visibility = View.INVISIBLE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        navBar.visibility = View.VISIBLE
+        btnPair.visibility = View.INVISIBLE
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(bluetoothSettingsViewModel::class.java)
+    }
+
+    private fun connectBT() {
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(
+                enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
+        }
+    }
+
     private fun tryConnect() {
+        //Try the connection until successful
         progressBar.visibility = View.VISIBLE
         Handler().postDelayed({
-            if (!hasConnected){
-                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+            if (!hasConnected) {
+                Toast.makeText(
+                    context,
+                    "Connection failed. Check your device is paired and connected to the vehicle and try again",
+                    Toast.LENGTH_LONG
+                ).show()
                 progressBar.visibility = View.INVISIBLE
             }
         }, 6000)
-        try{
+        try {
             CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
-        }catch (e: java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
             progressBar.visibility = View.INVISIBLE
             Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
@@ -142,21 +175,5 @@ class BluetoothSettingsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        progressBar.visibility = View.INVISIBLE
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        navBar.visibility = View.VISIBLE
-        btnPair.visibility = View.INVISIBLE
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(bluetoothSettingsViewModel::class.java)
     }
 }

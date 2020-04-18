@@ -24,7 +24,7 @@ class OBDDataBase(context: Context?, faultCodesFromOBD: Array<String>) : SQLiteA
             val sqlSelect = arrayOf("desc")
             val sqlTables = "codes"
             val sqlWhere = "id IN (" +
-                    TextUtils.join(",", Collections.nCopies(faultCodesArray.size - 1, "?")) +
+                    TextUtils.join(",", Collections.nCopies(faultCodesArray.size, "?")) +
                     ")"
             qb.tables = sqlTables
 

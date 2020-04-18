@@ -38,6 +38,7 @@ class BluetoothSetupActivity : AppCompatActivity() {
             finish()
             //If it is not enabled, bring up the alert to ask the user to enable BT or exit
         } else {
+
             val builder = AlertDialog.Builder(this)
             builder.setTitle("DigiDash Setup")
             builder.setMessage("Welcome to DigiDash.\nThis app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")

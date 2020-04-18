@@ -29,6 +29,8 @@ class SignOutFragment : Fragment() {
         firebaseAuth.signOut()
         Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
         startActivity(Intent(context, LoginActivity::class.java))
+        val fragmentManager = parentFragmentManager
+        fragmentManager.beginTransaction().remove(this)
         return root
     }
 

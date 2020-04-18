@@ -1,8 +1,6 @@
 package com.example.demoapp
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,17 +13,19 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var backPressed = false
+    private var backPressed = false //Used for exiting app correctly
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Setup toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        //Setup drawer and navigation
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
@@ -39,17 +39,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_Faults
             ), drawerLayout
         )
-
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavigationView.setupWithNavController(navController)
-        bottomNavigationView.menu.findItem(R.id.navigation_Perf).isChecked = true
         navView.setupWithNavController(navController)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.options_nav_menu, menu)
-        return true
+        //ensure that the performance button is checked when MainActivity loads
+        bottomNavigationView.menu.findItem(R.id.navigation_Perf).isChecked = true
     }
 
     override fun onSupportNavigateUp(): Boolean {

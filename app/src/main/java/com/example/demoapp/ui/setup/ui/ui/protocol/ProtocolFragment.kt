@@ -1,10 +1,12 @@
 package com.example.demoapp.ui.setup.ui.ui.protocol
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -88,10 +90,11 @@ class ProtocolFragment : Fragment() {
                     "\nYou can add or change your device in the Bluetooth page later if required"
         )
         alert.setButton(
-            "Continue"
-        ) { dialog, which ->
-            alert.dismiss()
-        }
+            Dialog.BUTTON_POSITIVE,
+            "Continue",
+            DialogInterface.OnClickListener { dialog, which ->
+                alert.dismiss()
+            })
         alert.show()
 
         val spinner: Spinner = root.findViewById(R.id.spnSelectDevice)
@@ -102,12 +105,20 @@ class ProtocolFragment : Fragment() {
 
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             if (currentProtocolFromOBD == "OK") {
-                Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "Connection to " + currentDevice.name + " successful",
+                    Toast.LENGTH_LONG
+                ).show()
                 startActivity(Intent(context, MainActivity::class.java))
                 requireActivity().finish()
             }
             Handler().postDelayed({
-                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "Connection failed. Check your device is paired and connected to the vehicle and try again",
+                    Toast.LENGTH_LONG
+                ).show()
                 progressBar.visibility = View.INVISIBLE
             }, 6000)
         }
@@ -160,8 +171,12 @@ class ProtocolFragment : Fragment() {
     private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
         Handler().postDelayed({
-            if (!hasConnected){
-                Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
+            if (!hasConnected) {
+                Toast.makeText(
+                    context,
+                    "Connection failed. Check your device is paired and connected to the vehicle and try again",
+                    Toast.LENGTH_LONG
+                ).show()
                 progressBar.visibility = View.INVISIBLE
             }
         }, 6000)

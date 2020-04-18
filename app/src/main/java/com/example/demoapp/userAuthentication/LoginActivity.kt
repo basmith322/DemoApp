@@ -3,6 +3,7 @@ package com.example.demoapp.userAuthentication
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuthException
 class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressBar: ProgressBar
+    private var backPressed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -30,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
         StrictMode.setThreadPolicy(policy)
 
         //Validation check to ensure app is connected to network
-        if (isConnectedToNetwork()) {
+        if (isConnectedToNetwork(this)) {
             firebaseAuth = FirebaseAuth.getInstance()
             progressBar = findViewById(R.id.progressBar_login)
             progressBar.visibility = View.INVISIBLE
@@ -45,10 +47,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun Context.isConnectedToNetwork(): Boolean {
-        val connectivityManager =
-            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-        return connectivityManager?.activeNetworkInfo?.isConnectedOrConnecting ?: false
+    private fun isConnectedToNetwork(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw      = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 
     //Perform validation check if there are email and password strings. Email and Password formatting are handled by Firebase.
@@ -107,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
     //Again check if there is network connection.
     override fun onResume() {
         super.onResume()
-        if (isConnectedToNetwork()) {
+        if (isConnectedToNetwork(this)) {
             firebaseAuth = FirebaseAuth.getInstance()
             progressBar = findViewById(R.id.progressBar_login)
             progressBar.visibility = View.INVISIBLE
@@ -125,5 +132,14 @@ class LoginActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         finishAffinity()
+    }
+
+    override fun onBackPressed() {
+        if (backPressed) {
+            super.onBackPressed()
+            return
+        }
+        Toast.makeText(this, "Press Back again to close the app", Toast.LENGTH_LONG).show()
+        backPressed = true
     }
 }
