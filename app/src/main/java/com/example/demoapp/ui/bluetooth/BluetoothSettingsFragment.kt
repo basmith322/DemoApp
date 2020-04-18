@@ -20,7 +20,6 @@ import com.example.demoapp.ui.performance.PerformanceFragment
 import com.example.demoapp.utilities.CommandService
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 const val REQUEST_ENABLE_BT = 1
 class BluetoothSettingsFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -42,7 +41,7 @@ class BluetoothSettingsFragment : Fragment() {
         progressBar = root.findViewById(R.id.progressBar_BTSettings)
         progressBar.visibility = View.INVISIBLE
 
-        navBar = activity!!.findViewById(R.id.bottom_nav_view)
+        navBar = requireActivity().findViewById(R.id.bottom_nav_view)
         navBar.visibility = View.GONE
 
         //region bluetooth adapter code
@@ -108,7 +107,7 @@ class BluetoothSettingsFragment : Fragment() {
             deviceList.add(device.name)
 
             val adapter = ArrayAdapter(
-                this.context!!,
+                this.requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 deviceList
             )

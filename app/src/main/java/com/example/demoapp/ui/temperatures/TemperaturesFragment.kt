@@ -138,7 +138,7 @@ class TemperaturesFragment : Fragment() {
     private fun checkBtDevices() {
         if (bluetoothAdapter?.isEnabled == true) {
             try {
-                data = arguments!!
+                data = requireArguments()
                 currentDevice = data.get("currentDevice") as BluetoothDevice
             } catch (e: Exception) {
                 Log.e(TAG, "Device not yet set, Falling back to default device", e)

@@ -51,7 +51,7 @@ class ProtocolFragment : Fragment() {
             val started = sharedPref.getBoolean("started", true)
             if (started) {
                 startActivity(Intent(context, MainActivity::class.java))
-                activity!!.finish()
+                requireActivity().finish()
             }
         }
     }
@@ -104,7 +104,7 @@ class ProtocolFragment : Fragment() {
             if (currentProtocolFromOBD == "OK") {
                 Toast.makeText(context, "Connection to " + currentDevice.name + " successful", Toast.LENGTH_LONG).show()
                 startActivity(Intent(context, MainActivity::class.java))
-                activity!!.finish()
+                requireActivity().finish()
             }
             Handler().postDelayed({
                 Toast.makeText(context, "Connection failed. Check your device is paired and connected to the vehicle and try again", Toast.LENGTH_LONG).show()
@@ -124,7 +124,7 @@ class ProtocolFragment : Fragment() {
             deviceList.add(device.name)
 
             val adapter = ArrayAdapter(
-                context!!,
+                requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 deviceList
             )

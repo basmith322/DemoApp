@@ -8,7 +8,4 @@ class FaultCodesViewModel : ViewModel() {
         MutableLiveData<Array<String>>()
     }
 
-    val returnedProtocol by lazy {
-        MutableLiveData<String>()
-    }
 }

@@ -14,12 +14,11 @@ class OBDDataBase(context: Context?, faultCodesFromOBD: Array<String>) : SQLiteA
     DATABASE_VERSION
 ) {
     private val faultCodesArray = faultCodesFromOBD
-    private val i = 0
     val getDBCodes: MutableList<String>
         get() {
             faultCodesArray.contentToString().replace('[', '(').replace(']', ')')
 
-            var codeList = ArrayList<String>()
+            val codeList = ArrayList<String>()
             val db = readableDatabase
             val qb = SQLiteQueryBuilder()
             val sqlSelect = arrayOf("desc")

@@ -11,12 +11,6 @@
         tools:layout="@layout/fragment_performance"/>
 
     <fragment
-        android:id="@+id/navigation_Trip"
-        android:name="com.example.demoapp.ui.trip.TripFragment"
-        android:label="@string/title_Trip"
-        tools:layout="@layout/fragment_trip"/>
-
-    <fragment
         android:id="@+id/navigation_Temps"
         android:name="com.example.demoapp.ui.temperatures.TemperaturesFragment"
         android:label="@string/title_Temps"
@@ -34,10 +28,10 @@
     <fragment
         android:id="@+id/navigation_Bluetooth"
         android:name="com.example.demoapp.ui.bluetooth.BluetoothSettingsFragment"
-        android:label="BluetoothFragment" />
+        android:label="Connect OBD Devices" />
     <fragment
         android:id="@+id/navigation_Faults"
         android:name="com.example.demoapp.ui.faultCodes.FaultCodesFragment"
-        android:label="fault_codes_fragment"
-        tools:layout="@layout/fault_codes_fragment" />
+        android:label="Fault Codes"
+        tools:layout="@layout/fragment_faults" />
 </navigation>

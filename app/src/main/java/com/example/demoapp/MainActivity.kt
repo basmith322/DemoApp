@@ -1,10 +1,8 @@
 package com.example.demoapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,7 +12,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.demoapp.ui.trip.LoggingActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
@@ -36,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_Perf,
-                R.id.navigation_Trip,
                 R.id.navigation_Temps,
                 R.id.navigation_Fuel,
                 R.id.navigation_Bluetooth,
@@ -56,16 +52,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menuLogTrip -> {
-                goToTripLog()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
@@ -78,10 +64,5 @@ class MainActivity : AppCompatActivity() {
         }
         Toast.makeText(this, "Press Back again to close the app", Toast.LENGTH_LONG).show()
         backPressed = true
-    }
-
-    private fun goToTripLog() {
-        val intent = Intent(this, LoggingActivity::class.java)
-        startActivity(intent)
     }
 }

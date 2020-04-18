@@ -5,7 +5,5 @@
         android:title="@string/txtOptions"
         android:visible="false"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/menuLogTrip"
-        android:title="@string/btnLogging" />
+    <item android:title="@string/btnLogging" />
 </menu>

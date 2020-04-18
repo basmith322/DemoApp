@@ -21,9 +21,6 @@
             android:name=".ui.setup.BluetoothSetupActivity"
             android:label="Bluetooth Setup" />
         <activity
-            android:name=".ui.trip.LoggingActivity"
-            android:label="Trip Logging" />
-        <activity
             android:name=".userAuthentication.LoginActivity"
             android:label="DigiDash"
             tools:ignore="InnerclassSeparator">

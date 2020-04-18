@@ -2,7 +2,7 @@ package com.example.demoapp.ui.faultCodes
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,7 +20,6 @@ import androidx.lifecycle.Observer
 import com.example.demoapp.R
 import com.example.demoapp.data.OBDDataBase
 import com.example.demoapp.utilities.CommandService
-
 
 class FaultCodesFragment : Fragment() {
     private val faultCodesViewModel: FaultCodesViewModel by viewModels()
@@ -45,28 +44,34 @@ class FaultCodesFragment : Fragment() {
     }
 
     private fun checkFaultCodes() {
-        db = OBDDataBase(context, code)
-        codeDescriptions = db!!.getDBCodes
+        if (!code.isNullOrEmpty()) {
+            try {
+                db = OBDDataBase(context, code)
+                codeDescriptions = db!!.getDBCodes
 
-        val adapter: ListAdapter = ArrayAdapter(
-            context!!,
-            android.R.layout.simple_list_item_1,
-            codeDescriptions
-        )
-        lv.adapter = adapter
+                val adapter: ListAdapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    codeDescriptions
+                )
+                lv.adapter = adapter
+            } catch (e: Exception) {
+                Log.e(TAG, "Could not contact db", e)
+            }
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fault_codes_fragment, container, false)
+        val root = inflater.inflate(R.layout.fragment_faults, container, false)
 
         //fault code returned from OBD
         val faultObserver = Observer<Array<String>> { currentFaultFromOBD ->
             // Update the UI, in this case, a TextView.
 //            textView_currentFault.text = currentFaultFromOBD
-           code = currentFaultFromOBD
+            code = currentFaultFromOBD
         }
         faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
 
@@ -81,15 +86,15 @@ class FaultCodesFragment : Fragment() {
     private fun checkBtDevices() {
         if (bluetoothAdapter?.isEnabled == true) {
             try {
-                data = arguments!!
+                data = requireArguments()
                 currentDevice = data.get("currentDevice") as BluetoothDevice
             } catch (e: Exception) {
-                Log.e(ContentValues.TAG, "Device not yet set, Falling back to default device", e)
+                Log.e(TAG, "Device not yet set, Falling back to default device", e)
                 try {
                     val pairedDevices = bluetoothAdapter.bondedDevices
                     currentDevice = pairedDevices!!.first()
                 } catch (e: Exception) {
-                    Log.e(ContentValues.TAG, "No devices in device list")
+                    Log.e(TAG, "No devices in device list")
                 }
             }
         }
@@ -100,7 +105,7 @@ class FaultCodesFragment : Fragment() {
             try {
                 CommandService().connectToServerFaults(faultCodesViewModel, currentDevice)
             } catch (e: Exception) {
-                Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
+                Log.e(TAG, "Error Connecting to Server: ", e)
             }
             mainHandler.postDelayed(this, 2000)
         }
