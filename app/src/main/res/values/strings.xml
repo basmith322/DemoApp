@@ -19,8 +19,6 @@
     <string name="txtLoginReg">Don\'t have an account? Sign Up Here</string>
     <string name="txtNoNetwork">There is currently no network connection. Please turn on WiFi or Mobile Data and tap retry to try again.</string>
     <string name="signOut">Sign Out</string>
-    <string name="btnLogging">Log Trip Data</string>
-    <string name="txtOptions">Additional</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
     <string name="txtSelectDevice">Connect To Device</string>
     <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again.</string>

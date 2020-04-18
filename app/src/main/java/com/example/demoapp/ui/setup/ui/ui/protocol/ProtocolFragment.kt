@@ -92,7 +92,7 @@ class ProtocolFragment : Fragment() {
         alert.setButton(
             Dialog.BUTTON_POSITIVE,
             "Continue",
-            DialogInterface.OnClickListener { dialog, which ->
+            { dialog, which ->
                 alert.dismiss()
             })
         alert.show()
