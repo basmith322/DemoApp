@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.demoapp.utilities.MY_UUID
@@ -24,7 +23,6 @@ abstract class AbstractCommandSender<T : ViewModel>
     private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
         device.createRfcommSocketToServiceRecord(MY_UUID)
     }
-    private var prefs: SharedPreferences? = null
 
     override fun run() {
         Log.d(ContentValues.TAG, "ConnectThread: started.")

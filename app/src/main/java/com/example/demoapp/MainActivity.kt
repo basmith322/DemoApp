@@ -1,7 +1,6 @@
 package com.example.demoapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -50,14 +49,5 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    override fun onBackPressed() {
-        if (backPressed) {
-            super.onBackPressed()
-            return
-        }
-        Toast.makeText(this, "Press Back again to close the app", Toast.LENGTH_LONG).show()
-        backPressed = true
     }
 }

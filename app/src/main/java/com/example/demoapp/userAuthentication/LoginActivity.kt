@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.ui.setup.BluetoothSetupActivity
 import com.example.demoapp.utilities.CloseKeyboard
@@ -38,18 +37,16 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
 
             if (firebaseAuth.currentUser != null) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@LoginActivity, BluetoothSetupActivity::class.java))
                 finish()
             }
-        } else {
-            startActivity(Intent(this@LoginActivity, NoNetwork::class.java))
-            finish()
         }
     }
 
     private fun isConnectedToNetwork(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nw      = connectivityManager.activeNetwork ?: return false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw = connectivityManager.activeNetwork ?: return false
         val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
         return when {
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true

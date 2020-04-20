@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,12 +34,14 @@ class BluetoothSettingsFragment : Fragment() {
     private lateinit var viewModel: BluetoothSettingsViewModel
     private var hasConnected: Boolean = false
     private lateinit var spinner: Spinner
+    lateinit var mainHandler: Handler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.bluetooth_settings_fragment, container, false)
+        mainHandler = Handler(Looper.getMainLooper())
 
         //Initialize view elements to variables
         progressBar = root.findViewById(R.id.progressBar_BTSettings)
@@ -64,7 +67,7 @@ class BluetoothSettingsFragment : Fragment() {
         //Observer to monitor the value returned from the OBD for protocol
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             //If the protocol returns OK then the connection is successful
-            if (currentProtocolFromOBD == "OK") {
+            if (currentProtocolFromOBD.contains("OK", true)) {
                 hasConnected = true
                 Toast.makeText(
                     context,
@@ -74,8 +77,10 @@ class BluetoothSettingsFragment : Fragment() {
 
                 //Replace the BT fragment with the performance fragment and remove BT fragment
                 val perfFragment = PerformanceFragment()
+
                 val fragmentManager = parentFragmentManager
                 perfFragment.arguments = data
+
                 fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment)
                     .commit()
                 fragmentManager.beginTransaction().remove(this)
@@ -86,14 +91,17 @@ class BluetoothSettingsFragment : Fragment() {
     }
 
     override fun onPause() {
-        super.onPause()
+        mainHandler.removeCallbacksAndMessages(null)
         progressBar.visibility = View.INVISIBLE
+        super.onPause()
     }
 
+
     override fun onDestroyView() {
-        super.onDestroyView()
+        mainHandler.removeCallbacksAndMessages(null)
         navBar.visibility = View.VISIBLE
         btnPair.visibility = View.INVISIBLE
+        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,7 +122,14 @@ class BluetoothSettingsFragment : Fragment() {
     private fun tryConnect() {
         //Try the connection until successful
         progressBar.visibility = View.VISIBLE
-        Handler().postDelayed({
+        try {
+            CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
+            progressBar.visibility = View.INVISIBLE
+            Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
+        }
+        mainHandler.postDelayed({
             if (!hasConnected) {
                 Toast.makeText(
                     context,
@@ -124,13 +139,6 @@ class BluetoothSettingsFragment : Fragment() {
                 progressBar.visibility = View.INVISIBLE
             }
         }, 6000)
-        try {
-            CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
-        } catch (e: java.lang.Exception) {
-            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
-            progressBar.visibility = View.INVISIBLE
-            Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
-        }
     }
 
     private fun pairedDevices(spinner: Spinner) {

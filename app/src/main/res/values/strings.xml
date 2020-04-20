@@ -27,4 +27,6 @@
     <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>
     <string name="btnFindProtocol">Find Protocol</string>
     <string name="btnCheckFaults">Check For Faults</string>
+    <string name="savedDefaultDevice" />
+    <string name="savedSelectedDevice" />
 </resources>

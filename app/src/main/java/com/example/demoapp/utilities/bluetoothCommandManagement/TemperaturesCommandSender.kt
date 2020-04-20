@@ -1,14 +1,11 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import android.content.ContentValues
-import android.util.Log
+import br.ufrn.imd.obd.commands.engine.OilTempCommand
+import br.ufrn.imd.obd.commands.temperature.AirIntakeTemperatureCommand
+import br.ufrn.imd.obd.commands.temperature.AmbientAirTemperatureCommand
+import br.ufrn.imd.obd.commands.temperature.EngineCoolantTemperatureCommand
 import com.example.demoapp.ui.temperatures.TemperaturesViewModel
-import com.github.pires.obd.commands.engine.OilTempCommand
-import com.github.pires.obd.commands.protocol.ObdResetCommand
-import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand
-import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
-import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -16,15 +13,6 @@ class TemperaturesCommandSender(device: BluetoothDevice, providedViewModel: Temp
     AbstractCommandSender<TemperaturesViewModel>(device, providedViewModel) {
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
-        val obdResetCommand = ObdResetCommand()
-        obdResetCommand.run(inputStream, outputStream)
-
-        try {
-            sleep(500)
-        } catch (e: InterruptedException) {
-            Log.e(ContentValues.TAG,"Error with OBD reset:", e)
-        }
-
         val coolantTempCommand = EngineCoolantTemperatureCommand()
         coolantTempCommand.run(inputStream,outputStream)
         val coolantTempResult = coolantTempCommand.temperature

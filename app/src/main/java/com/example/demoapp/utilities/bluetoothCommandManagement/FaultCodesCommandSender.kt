@@ -1,12 +1,9 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import android.content.ContentValues
-import android.util.Log
+import br.ufrn.imd.obd.commands.control.TroubleCodesCommand
+import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
 import com.example.demoapp.ui.faultCodes.FaultCodesViewModel
-import com.github.pires.obd.commands.control.TroubleCodesCommand
-import com.github.pires.obd.commands.protocol.ObdResetCommand
-import com.github.pires.obd.commands.protocol.TimeoutCommand
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -14,15 +11,6 @@ class FaultCodesCommandSender(device: BluetoothDevice, providedViewModel: FaultC
     AbstractCommandSender<FaultCodesViewModel>(device, providedViewModel) {
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
-        val obdResetCommand = ObdResetCommand()
-        obdResetCommand.run(inputStream, outputStream)
-
-        try {
-            sleep(500)
-        } catch (e: InterruptedException) {
-            Log.e(ContentValues.TAG,"Error with OBD reset:", e)
-        }
-
         val timeoutCommand = TimeoutCommand(62)
         timeoutCommand.run(inputStream,outputStream)
 

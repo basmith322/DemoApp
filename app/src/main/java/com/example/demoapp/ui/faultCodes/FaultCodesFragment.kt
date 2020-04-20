@@ -102,6 +102,7 @@ class FaultCodesFragment : Fragment() {
             try {
                 data = requireArguments()
                 currentDevice = data.get("currentDevice") as BluetoothDevice
+                data.putParcelable("currentDevice", currentDevice)
             } catch (e: Exception) {
                 Log.e(TAG, "Device not yet set, Falling back to default device", e)
                 //If there is no device in data attempt to use default device

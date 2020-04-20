@@ -15,20 +15,23 @@ class BluetoothSetupActivity : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_enable_bluetooth)
+
         //If BT is already enabled, don't prompt the user
         setTheme(R.style.AppTheme)
         if (bluetoothAdapter?.isEnabled == true) {
             startActivity(Intent(this, ProtocolActivity::class.java))
             finish()
             //If it is not enabled, bring up the alert to ask the user to enable BT or exit
+        } else {
+            showAlert()
         }
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_enable_bluetooth)
+        //If there is no Bluetooth Adapter then do not show prompt and inform user the device does not support BT
         if (bluetoothAdapter == null) {
             Toast.makeText(this, "This device does not support bluetooth", Toast.LENGTH_LONG)
                 .show()
         }
-        showAlert()
     }
 
     private fun showAlert() {

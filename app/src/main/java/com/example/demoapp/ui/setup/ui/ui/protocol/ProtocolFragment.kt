@@ -6,10 +6,10 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +32,8 @@ class ProtocolFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var progressBar: ProgressBar
     private var hasConnected: Boolean = false
+    lateinit var mainHandler: Handler
+    private lateinit var data: Bundle
 
     companion object {
         fun newInstance() = ProtocolFragment()
@@ -41,8 +43,11 @@ class ProtocolFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        var previouslyStarted: Boolean = sharedPref.getBoolean("started", false)
+        mainHandler = Handler(Looper.getMainLooper())
+        val sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
+
+
+        var previouslyStarted: Boolean = sharedPref!!.getBoolean("started", false)
         if (!previouslyStarted) {
             with(sharedPref.edit()) {
                 previouslyStarted = true
@@ -113,7 +118,7 @@ class ProtocolFragment : Fragment() {
                 startActivity(Intent(context, MainActivity::class.java))
                 requireActivity().finish()
             }
-            Handler().postDelayed({
+            mainHandler.postDelayed({
                 Toast.makeText(
                     context,
                     "Connection failed. Check your device is paired and connected to the vehicle and try again",
@@ -147,7 +152,9 @@ class ProtocolFragment : Fragment() {
                     if (pairedList.size > 0) {
                         val devices: Array<Any> = pairedList.toTypedArray()
                         currentDevice = devices[0] as BluetoothDevice
-                        Log.e(TAG, "" + currentDevice)
+                        Log.e("MainActivity", "" + currentDevice)
+                        data = Bundle()
+                        data.putParcelable("currentDevice", currentDevice)
                     }
                 }
 
@@ -161,7 +168,9 @@ class ProtocolFragment : Fragment() {
                     if (pairedList.size > 0) {
                         val devices: Array<Any> = pairedList.toTypedArray()
                         currentDevice = devices[position] as BluetoothDevice
-                        Log.e(TAG, "" + currentDevice)
+                        Log.e("MainActivity", "" + currentDevice)
+                        data = Bundle()
+                        data.putParcelable("currentDevice", currentDevice)
                     }
                 }
             }
@@ -170,7 +179,7 @@ class ProtocolFragment : Fragment() {
 
     private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
-        Handler().postDelayed({
+        mainHandler.postDelayed({
             if (!hasConnected) {
                 Toast.makeText(
                     context,
@@ -190,8 +199,14 @@ class ProtocolFragment : Fragment() {
     }
 
     override fun onPause() {
-        super.onPause()
         progressBar.visibility = View.INVISIBLE
+        mainHandler.removeCallbacksAndMessages(null)
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        mainHandler.removeCallbacksAndMessages(null)
+        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

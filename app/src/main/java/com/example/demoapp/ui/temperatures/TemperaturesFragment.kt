@@ -40,7 +40,6 @@ class TemperaturesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val root = inflater.inflate(R.layout.fragment_temperatures, container, false)
 
         val coolantGauge: SpeedometerGauge = root.findViewById(R.id.coolantTemp)
@@ -140,6 +139,7 @@ class TemperaturesFragment : Fragment() {
             try {
                 data = requireArguments()
                 currentDevice = data.get("currentDevice") as BluetoothDevice
+                data.putParcelable("currentDevice", currentDevice)
             } catch (e: Exception) {
                 Log.e(TAG, "Device not yet set, Falling back to default device", e)
                 try {
@@ -173,5 +173,4 @@ class TemperaturesFragment : Fragment() {
         checkBtDevices()
         mainHandler.post(updateTemperaturesTask)
     }
-
 }
