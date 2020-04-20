@@ -1,11 +1,11 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import br.ufrn.imd.obd.commands.engine.OilTempCommand
-import br.ufrn.imd.obd.commands.temperature.AirIntakeTemperatureCommand
-import br.ufrn.imd.obd.commands.temperature.AmbientAirTemperatureCommand
-import br.ufrn.imd.obd.commands.temperature.EngineCoolantTemperatureCommand
 import com.example.demoapp.ui.temperatures.TemperaturesViewModel
+import com.github.pires.obd.commands.engine.OilTempCommand
+import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand
+import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
+import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand
 import java.io.InputStream
 import java.io.OutputStream
 

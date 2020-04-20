@@ -1,11 +1,11 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import br.ufrn.imd.obd.commands.fuel.AirFuelRatioCommand
-import br.ufrn.imd.obd.commands.fuel.ConsumptionRateCommand
-import br.ufrn.imd.obd.commands.fuel.FuelLevelCommand
-import br.ufrn.imd.obd.commands.pressure.FuelPressureCommand
 import com.example.demoapp.ui.consumption.ConsumptionViewModel
+import com.github.pires.obd.commands.fuel.AirFuelRatioCommand
+import com.github.pires.obd.commands.fuel.ConsumptionRateCommand
+import com.github.pires.obd.commands.fuel.FuelLevelCommand
+import com.github.pires.obd.commands.pressure.FuelPressureCommand
 import java.io.InputStream
 import java.io.OutputStream
 

@@ -1,11 +1,11 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import br.ufrn.imd.obd.commands.engine.RPMCommand
-import br.ufrn.imd.obd.commands.engine.SpeedCommand
-import br.ufrn.imd.obd.commands.pressure.BarometricPressureCommand
-import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
 import com.example.demoapp.ui.performance.PerformanceViewModel
+import com.github.pires.obd.commands.SpeedCommand
+import com.github.pires.obd.commands.engine.RPMCommand
+import com.github.pires.obd.commands.pressure.BarometricPressureCommand
+import com.github.pires.obd.commands.protocol.TimeoutCommand
 import java.io.InputStream
 import java.io.OutputStream
 

@@ -1,9 +1,9 @@
 package com.example.demoapp.utilities.bluetoothCommandManagement
 
 import android.bluetooth.BluetoothDevice
-import br.ufrn.imd.obd.commands.control.TroubleCodesCommand
-import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
 import com.example.demoapp.ui.faultCodes.FaultCodesViewModel
+import com.github.pires.obd.commands.control.TroubleCodesCommand
+import com.github.pires.obd.commands.protocol.TimeoutCommand
 import java.io.InputStream
 import java.io.OutputStream
 

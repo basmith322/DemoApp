@@ -34,7 +34,7 @@ class BluetoothSettingsFragment : Fragment() {
     private lateinit var viewModel: BluetoothSettingsViewModel
     private var hasConnected: Boolean = false
     private lateinit var spinner: Spinner
-    lateinit var mainHandler: Handler
+    private lateinit var mainHandler: Handler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
