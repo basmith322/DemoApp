@@ -12,12 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cardiomood.android.controls.gauge.SpeedometerGauge
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_performance.*
 import kotlin.math.roundToInt
 
@@ -28,11 +34,17 @@ class PerformanceFragment : Fragment() {
     private lateinit var data: Bundle
     private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private var dataRetrieve: Long? = null
+    private var currentMPH: Long = 0
+    private var storedMaxSpeed: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
         checkBtDevices()
+        firebaseDatabase = FirebaseDatabase.getInstance()
+
     }
 
     override fun onCreateView(
@@ -86,6 +98,7 @@ class PerformanceFragment : Fragment() {
             // Update the UI, in this case, a TextView.
             textView_CurrentSpeed.text = "$currentSpeedFromOBD MPH"
             speedometer.speed = currentSpeedFromOBD.toDouble()
+            currentMPH = currentSpeedFromOBD.toLong()
         }
         performanceViewModel.currentSpeed.observe(viewLifecycleOwner, speedObserver)
 
@@ -132,11 +145,6 @@ class PerformanceFragment : Fragment() {
         performanceViewModel.textMaxSpeedTitle.observe(viewLifecycleOwner, Observer {
             textMaxSpeedTitle.text = it
         })
-        val textMaxSpeed: TextView = root.findViewById(R.id.textView_MaxSpeed)
-        performanceViewModel.textMaxSpeed.observe(viewLifecycleOwner, Observer {
-            textMaxSpeed.text = it.toString()
-
-        })
         return root
     }
 
@@ -161,10 +169,49 @@ class PerformanceFragment : Fragment() {
         override fun run() {
             try {
                 CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
+                calcMaxSpeed()
             } catch (e: Exception) {
                 Log.e(TAG, "Error Connecting to Server: ", e)
             }
+            basicRead()
             mainHandler.postDelayed(this, 2000)
+        }
+    }
+
+    private fun basicWrite(maxSpeedForFirebase: Long) {
+        //Obtain values from the text field, load the spinner with objects and load the regions into the spinner at each position
+        val user = FirebaseAuth.getInstance().currentUser
+        var uid = ""
+        user?.let { uid = user.uid }
+        firebaseDatabase.getReference(uid).child("maxMPH").setValue(maxSpeedForFirebase)
+        Toast.makeText(context, "Trip Data Successfully Logged", Toast.LENGTH_LONG).show()
+    }
+
+    private fun basicRead() {
+        val user = FirebaseAuth.getInstance().currentUser
+        var uid = ""
+        user?.let { uid = user.uid }
+        firebaseDatabase = FirebaseDatabase.getInstance()
+        firebaseDatabase.getReference(uid).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val dataMap: HashMap<String, Any> = dataSnapshot.value as HashMap<String, Any>
+                    dataRetrieve = dataMap["maxMPH"] as? Long
+                }
+                textView_MaxSpeed.text = dataRetrieve.toString() + " MPH"
+                storedMaxSpeed = dataRetrieve!!.toLong()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                //failed to read value
+            }
+        })
+    }
+
+    private fun calcMaxSpeed() {
+        if (storedMaxSpeed < currentMPH) {
+            storedMaxSpeed = currentMPH
+            basicWrite(storedMaxSpeed)
         }
     }
 
