@@ -1,9 +1,10 @@
 package com.example.demoapp.ui.bluetooth
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 import com.example.demoapp.ui.performance.PerformanceFragment
 import com.example.demoapp.utilities.CommandService
+import com.example.demoapp.utilities.DeviceSingleton
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 const val REQUEST_ENABLE_BT = 1
@@ -27,14 +29,18 @@ class BluetoothSettingsFragment : Fragment() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var btnPair: Button
     private lateinit var navBar: BottomNavigationView
-    private lateinit var currentDevice: BluetoothDevice
-    private lateinit var data: Bundle
     private val bluetoothSettingsViewModel: BluetoothSettingsViewModel by viewModels()
     private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: BluetoothSettingsViewModel
-    private var hasConnected: Boolean = false
     private lateinit var spinner: Spinner
     private lateinit var mainHandler: Handler
+    lateinit var sharedPref: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,25 +67,26 @@ class BluetoothSettingsFragment : Fragment() {
 
         //if the device supports bluetooth but adapter is not enabled, request it to be enabled
         if (bluetoothAdapter?.isEnabled == false) {
-            connectBT()
+            enableBT()
         }
 
         //Observer to monitor the value returned from the OBD for protocol
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
             //If the protocol returns OK then the connection is successful
             if (currentProtocolFromOBD.contains("OK", true)) {
-                hasConnected = true
                 Toast.makeText(
                     context,
-                    "Connection to " + currentDevice.name + " successful",
+                    "Connection to " + DeviceSingleton.bluetoothDevice!!.name + " successful",
                     Toast.LENGTH_LONG
                 ).show()
-
+                with(sharedPref.edit()) {
+                    putString("deviceAddress", DeviceSingleton.bluetoothDevice!!.address)
+                    putBoolean("previouslyStarted", true)
+                    apply()
+                }
                 //Replace the BT fragment with the performance fragment and remove BT fragment
                 val perfFragment = PerformanceFragment()
-
                 val fragmentManager = parentFragmentManager
-                perfFragment.arguments = data
 
                 fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment)
                     .commit()
@@ -90,12 +97,86 @@ class BluetoothSettingsFragment : Fragment() {
         return root
     }
 
+    private fun tryConnect() {
+        //Try the connection until successful
+        progressBar.visibility = View.VISIBLE
+        try {
+            CommandService().connectToServerBTSettings(
+                bluetoothSettingsViewModel,
+                DeviceSingleton.bluetoothDevice!!
+            )
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
+            progressBar.visibility = View.INVISIBLE
+            Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
+        }
+        mainHandler.postDelayed({
+            if (!bluetoothSettingsViewModel.hasConnected) {
+                Toast.makeText(
+                    context,
+                    "Connection failed. Check your device is paired and connected to the vehicle and try again",
+                    Toast.LENGTH_LONG
+                ).show()
+                progressBar.visibility = View.INVISIBLE
+            }
+        }, 10000)
+    }
+
+    private fun pairedDevices(spinner: Spinner) {
+        val pairedList = bluetoothAdapter?.bondedDevices!!
+        val deviceList = ArrayList<String>()
+        pairedList.forEach { device ->
+            deviceList.add(device.name)
+
+            val adapter = ArrayAdapter(
+                this.requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                deviceList
+            )
+            spinner.adapter = adapter
+
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.e("MainActivity", "" + pairedList.size)
+                    if (pairedList.isNotEmpty()) {
+                        val devices = pairedList.toTypedArray()
+                        DeviceSingleton.bluetoothDevice = devices[0]
+                        Log.e("MainActivity", "" + DeviceSingleton.bluetoothDevice)
+                    }
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    Log.e("MainActivity", "" + pairedList.size)
+                    if (pairedList.isNotEmpty()) {
+                        val devices = pairedList.toTypedArray()
+                        DeviceSingleton.bluetoothDevice = devices[position]
+                        Log.e("MainActivity", "" + DeviceSingleton.bluetoothDevice)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun enableBT() {
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(
+                enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
+        }
+    }
+
     override fun onPause() {
         mainHandler.removeCallbacksAndMessages(null)
         progressBar.visibility = View.INVISIBLE
         super.onPause()
     }
-
 
     override fun onDestroyView() {
         mainHandler.removeCallbacksAndMessages(null)
@@ -109,79 +190,5 @@ class BluetoothSettingsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(bluetoothSettingsViewModel::class.java)
     }
 
-    private fun connectBT() {
-        if (bluetoothAdapter?.isEnabled == false) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(
-                enableBtIntent,
-                REQUEST_ENABLE_BT
-            )
-        }
-    }
 
-    private fun tryConnect() {
-        //Try the connection until successful
-        progressBar.visibility = View.VISIBLE
-        try {
-            CommandService().connectToServerBTSettings(bluetoothSettingsViewModel, currentDevice)
-        } catch (e: java.lang.Exception) {
-            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
-            progressBar.visibility = View.INVISIBLE
-            Log.e(ContentValues.TAG, "Error Connecting to Server: ", e)
-        }
-        mainHandler.postDelayed({
-            if (!hasConnected) {
-                Toast.makeText(
-                    context,
-                    "Connection failed. Check your device is paired and connected to the vehicle and try again",
-                    Toast.LENGTH_LONG
-                ).show()
-                progressBar.visibility = View.INVISIBLE
-            }
-        }, 6000)
-    }
-
-    private fun pairedDevices(spinner: Spinner) {
-        val pairedList = bluetoothAdapter?.bondedDevices
-        val deviceList = java.util.ArrayList<String>()
-        pairedList?.forEach { device ->
-            deviceList.add(device.name)
-
-            val adapter = ArrayAdapter(
-                this.requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                deviceList
-            )
-            spinner.adapter = adapter
-
-            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.e("MainActivity", "" + pairedList.size)
-                    if (pairedList.size > 0) {
-                        val devices: Array<Any> = pairedList.toTypedArray()
-                        currentDevice = devices[0] as BluetoothDevice
-                        Log.e("MainActivity", "" + currentDevice)
-                        data = Bundle()
-                        data.putParcelable("currentDevice", currentDevice)
-                    }
-                }
-
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    Log.e("MainActivity", "" + pairedList.size)
-                    if (pairedList.size > 0) {
-                        val devices: Array<Any> = pairedList.toTypedArray()
-                        currentDevice = devices[position] as BluetoothDevice
-                        Log.e("MainActivity", "" + currentDevice)
-                        data = Bundle()
-                        data.putParcelable("currentDevice", currentDevice)
-                    }
-                }
-            }
-        }
-    }
 }

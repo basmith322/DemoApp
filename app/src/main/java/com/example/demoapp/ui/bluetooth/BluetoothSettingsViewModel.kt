@@ -7,4 +7,5 @@ class BluetoothSettingsViewModel : ViewModel() {
     val returnedProtocol by lazy {
         MutableLiveData<String>()
     }
+    var hasConnected: Boolean = false
 }

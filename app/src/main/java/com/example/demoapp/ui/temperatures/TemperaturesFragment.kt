@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.temperatures
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
@@ -18,6 +17,7 @@ import androidx.lifecycle.Observer
 import com.cardiomood.android.controls.gauge.SpeedometerGauge
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
+import com.example.demoapp.utilities.DeviceSingleton
 import kotlinx.android.synthetic.main.fragment_temperatures.*
 import kotlin.math.roundToInt
 
@@ -25,13 +25,10 @@ class TemperaturesFragment : Fragment() {
 
     private val temperaturesViewModel: TemperaturesViewModel by viewModels()
     lateinit var mainHandler: Handler
-    private lateinit var data: Bundle
-    private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkBtDevices()
         mainHandler = Handler(Looper.getMainLooper())
     }
 
@@ -134,28 +131,11 @@ class TemperaturesFragment : Fragment() {
         return root
     }
 
-    private fun checkBtDevices() {
-        if (bluetoothAdapter?.isEnabled == true) {
-            try {
-                data = requireArguments()
-                currentDevice = data.get("currentDevice") as BluetoothDevice
-                data.putParcelable("currentDevice", currentDevice)
-            } catch (e: Exception) {
-                Log.e(TAG, "Device not yet set, Falling back to default device", e)
-                try {
-                    val pairedDevices = bluetoothAdapter.bondedDevices
-                    currentDevice = pairedDevices!!.first()
-                } catch (e: Exception) {
-                    Log.e(TAG, "No devices in device list")
-                }
-            }
-        }
-    }
 
     private val updateTemperaturesTask = object : Runnable {
         override fun run() {
             try {
-                CommandService().connectToServerTemperature(temperaturesViewModel, currentDevice)
+                CommandService().connectToServerTemperature(temperaturesViewModel, DeviceSingleton.bluetoothDevice!!)
             } catch (e: Exception) {
                 Log.e(TAG, "Error Connecting to Server: ", e)
             }
@@ -170,7 +150,6 @@ class TemperaturesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        checkBtDevices()
         mainHandler.post(updateTemperaturesTask)
     }
 }

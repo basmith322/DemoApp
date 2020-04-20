@@ -16,6 +16,8 @@ class ProtocolCommandSender(device: BluetoothDevice, providedViewModel: Protocol
         val protocolResult = selectProtocolCommand.result
 
         val prViewModel = viewModel
+        prViewModel.odbProtocol = ObdProtocols.AUTO
+        prViewModel.hasConnected = true
         prViewModel.returnedProtocol.postValue(protocolResult)
     }
 }

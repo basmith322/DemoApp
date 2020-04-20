@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.performance
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
@@ -12,13 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cardiomood.android.controls.gauge.SpeedometerGauge
 import com.example.demoapp.R
 import com.example.demoapp.utilities.CommandService
+import com.example.demoapp.utilities.DeviceSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -27,12 +26,9 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_performance.*
 import kotlin.math.roundToInt
 
-
 class PerformanceFragment : Fragment() {
     private val performanceViewModel: PerformanceViewModel by viewModels()
     lateinit var mainHandler: Handler
-    private lateinit var data: Bundle
-    private lateinit var currentDevice: BluetoothDevice
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var firebaseDatabase: FirebaseDatabase
     private var dataRetrieve: Long? = null
@@ -42,9 +38,7 @@ class PerformanceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
-        checkBtDevices()
         firebaseDatabase = FirebaseDatabase.getInstance()
-
     }
 
     override fun onCreateView(
@@ -148,27 +142,10 @@ class PerformanceFragment : Fragment() {
         return root
     }
 
-    private fun checkBtDevices() {
-        if (bluetoothAdapter?.isEnabled == true) {
-            try {
-                data = requireArguments()
-                currentDevice = data.get("currentDevice") as BluetoothDevice
-            } catch (e: Exception) {
-                Log.e(TAG, "Device not yet set, Falling back to default device", e)
-                try {
-                    val pairedDevices = bluetoothAdapter.bondedDevices
-                    currentDevice = pairedDevices!!.first()
-                } catch (e: Exception) {
-                    Log.e(TAG, "No devices in device list")
-                }
-            }
-        }
-    }
-
     private val updatePerformanceTask = object : Runnable {
         override fun run() {
             try {
-                CommandService().connectToServerPerformance(performanceViewModel, currentDevice)
+                CommandService().connectToServerPerformance(performanceViewModel, DeviceSingleton.bluetoothDevice!!)
                 calcMaxSpeed()
             } catch (e: Exception) {
                 Log.e(TAG, "Error Connecting to Server: ", e)
@@ -184,7 +161,6 @@ class PerformanceFragment : Fragment() {
         var uid = ""
         user?.let { uid = user.uid }
         firebaseDatabase.getReference(uid).child("maxMPH").setValue(maxSpeedForFirebase)
-        Toast.makeText(context, "Trip Data Successfully Logged", Toast.LENGTH_LONG).show()
     }
 
     private fun basicRead() {
@@ -222,7 +198,6 @@ class PerformanceFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        checkBtDevices()
         mainHandler.post(updatePerformanceTask)
     }
 }

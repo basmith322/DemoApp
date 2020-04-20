@@ -18,6 +18,7 @@ class BTSettingsCommandSender(
         val protocolResult = selectProtocolCommand.result
 
         val bluetoothSettingsViewModel = viewModel
+        bluetoothSettingsViewModel.hasConnected = true
         bluetoothSettingsViewModel.returnedProtocol.postValue(protocolResult)
     }
 }

@@ -3,10 +3,10 @@ package com.example.demoapp.ui.setup.ui.ui.protocol
 import android.app.AlertDialog
 import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,17 +23,16 @@ import com.example.demoapp.MainActivity
 import com.example.demoapp.R
 import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.utilities.CommandService
-
+import com.example.demoapp.utilities.DeviceSingleton
+import com.github.pires.obd.enums.ObdProtocols
 
 class ProtocolFragment : Fragment() {
     private val protocolViewModel: ProtocolViewModel by viewModels()
-    private lateinit var currentDevice: BluetoothDevice
     private lateinit var btnFindProtocol: Button
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var progressBar: ProgressBar
-    private var hasConnected: Boolean = false
-    private lateinit var mainHandler: Handler
-    private lateinit var data: Bundle
+    lateinit var mainHandler: Handler
+    lateinit var sharedPref: SharedPreferences
 
     companion object {
         fun newInstance() = ProtocolFragment()
@@ -42,24 +41,21 @@ class ProtocolFragment : Fragment() {
     private lateinit var viewModel: ProtocolViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         mainHandler = Handler(Looper.getMainLooper())
-        val sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
+        val previouslyStarted: Boolean = sharedPref.getBoolean("previouslyStarted", false)
 
-
-        var previouslyStarted: Boolean = sharedPref!!.getBoolean("started", false)
-        if (!previouslyStarted) {
-            with(sharedPref.edit()) {
-                previouslyStarted = true
-                putBoolean("started", previouslyStarted)
-                apply()
-            }
-        } else {
-            val started = sharedPref.getBoolean("started", true)
-            if (started) {
-                startActivity(Intent(context, MainActivity::class.java))
-                requireActivity().finish()
-            }
+        if (previouslyStarted) {
+            val device = sharedPref.getString("deviceAddress", "")
+            DeviceSingleton.bluetoothDevice =
+                bluetoothAdapter?.bondedDevices?.findLast { it -> it.address == device }
+            val protocol = sharedPref.getString("odbProtocol", null)
+            protocolViewModel.odbProtocol =  if (null != protocol) ObdProtocols.valueOf(protocol) else ObdProtocols.AUTO
+        }
+        if (DeviceSingleton.bluetoothDevice != null) {
+            startActivity(Intent(context, MainActivity::class.java))
+            requireActivity().finish()
         }
     }
 
@@ -96,10 +92,10 @@ class ProtocolFragment : Fragment() {
         )
         alert.setButton(
             Dialog.BUTTON_POSITIVE,
-            "Continue"
-        ) { dialog, which ->
-            alert.dismiss()
-        }
+            "Continue",
+            { dialog, which ->
+                alert.dismiss()
+            })
         alert.show()
 
         val spinner: Spinner = root.findViewById(R.id.spnSelectDevice)
@@ -109,12 +105,18 @@ class ProtocolFragment : Fragment() {
         btnFindProtocol.setOnClickListener { tryConnect() }
 
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
-            if (currentProtocolFromOBD == "OK") {
+            if (currentProtocolFromOBD.contains("OK", true)) {
                 Toast.makeText(
                     context,
-                    "Connection to " + currentDevice.name + " successful",
+                    "Connection to " + DeviceSingleton.bluetoothDevice!!.name + " successful",
                     Toast.LENGTH_LONG
                 ).show()
+                with(sharedPref.edit()) {
+                    putString("odbProtocol", protocolViewModel.odbProtocol.toString())
+                    putString("deviceAddress", DeviceSingleton.bluetoothDevice!!.address)
+                    putBoolean("previouslyStarted", true)
+                    apply()
+                }
                 startActivity(Intent(context, MainActivity::class.java))
                 requireActivity().finish()
             }
@@ -134,13 +136,13 @@ class ProtocolFragment : Fragment() {
     }
 
     private fun pairedDevices(spinner: Spinner) {
-        val pairedList = bluetoothAdapter?.bondedDevices
-        val deviceList = java.util.ArrayList<String>()
-        pairedList?.forEach { device ->
+        val pairedList = bluetoothAdapter?.bondedDevices!!
+        val deviceList = ArrayList<String>()
+        pairedList.forEach { device ->
             deviceList.add(device.name)
 
             val adapter = ArrayAdapter(
-                requireContext(),
+                this.requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 deviceList
             )
@@ -149,12 +151,10 @@ class ProtocolFragment : Fragment() {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     Log.e("MainActivity", "" + pairedList.size)
-                    if (pairedList.size > 0) {
-                        val devices: Array<Any> = pairedList.toTypedArray()
-                        currentDevice = devices[0] as BluetoothDevice
-                        Log.e("MainActivity", "" + currentDevice)
-                        data = Bundle()
-                        data.putParcelable("currentDevice", currentDevice)
+                    if (pairedList.isNotEmpty()) {
+                        val devices = pairedList.toTypedArray()
+                        DeviceSingleton.bluetoothDevice = devices[0]
+                        Log.e("MainActivity", "" + DeviceSingleton.bluetoothDevice)
                     }
                 }
 
@@ -165,12 +165,10 @@ class ProtocolFragment : Fragment() {
                     id: Long
                 ) {
                     Log.e("MainActivity", "" + pairedList.size)
-                    if (pairedList.size > 0) {
-                        val devices: Array<Any> = pairedList.toTypedArray()
-                        currentDevice = devices[position] as BluetoothDevice
-                        Log.e("MainActivity", "" + currentDevice)
-                        data = Bundle()
-                        data.putParcelable("currentDevice", currentDevice)
+                    if (pairedList.isNotEmpty()) {
+                        val devices = pairedList.toTypedArray()
+                        DeviceSingleton.bluetoothDevice = devices[position]
+                        Log.e("MainActivity", "" + DeviceSingleton.bluetoothDevice)
                     }
                 }
             }
@@ -179,8 +177,18 @@ class ProtocolFragment : Fragment() {
 
     private fun tryConnect() {
         progressBar.visibility = View.VISIBLE
+        try {
+            CommandService().connectToServerProtocol(
+                protocolViewModel,
+                DeviceSingleton.bluetoothDevice!!
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
+            progressBar.visibility = View.INVISIBLE
+            Log.e(TAG, "Error Connecting to Server: ", e)
+        }
         mainHandler.postDelayed({
-            if (!hasConnected) {
+            if (!protocolViewModel.hasConnected) {
                 Toast.makeText(
                     context,
                     "Connection failed. Check your device is paired and connected to the vehicle and try again",
@@ -188,14 +196,7 @@ class ProtocolFragment : Fragment() {
                 ).show()
                 progressBar.visibility = View.INVISIBLE
             }
-        }, 6000)
-        try {
-            CommandService().connectToServerProtocol(protocolViewModel, currentDevice)
-        } catch (e: Exception) {
-            Toast.makeText(context, "Error Connecting to OBD Device", Toast.LENGTH_LONG).show()
-            progressBar.visibility = View.INVISIBLE
-            Log.e(TAG, "Error Connecting to Server: ", e)
-        }
+        }, 10000)
     }
 
     override fun onPause() {

@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.faultCodes
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
@@ -17,14 +16,13 @@ import androidx.lifecycle.Observer
 import com.example.demoapp.R
 import com.example.demoapp.data.OBDDataBase
 import com.example.demoapp.utilities.CommandService
+import com.example.demoapp.utilities.DeviceSingleton
 
 class FaultCodesFragment : Fragment() {
     private val faultCodesViewModel: FaultCodesViewModel by viewModels()
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private var db: OBDDataBase? = null
     lateinit var mainHandler: Handler
-    private lateinit var data: Bundle
-    private lateinit var currentDevice: BluetoothDevice
     private lateinit var lv: ListView
     private lateinit var codeDescriptions: MutableList<String>
     private var code: Array<String> = arrayOf()
@@ -33,7 +31,6 @@ class FaultCodesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkBtDevices()
         mainHandler = Handler(Looper.getMainLooper())
     }
 
@@ -68,8 +65,6 @@ class FaultCodesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        //Check BT is enabled upon resume and start the fault code command sender again
-        checkBtDevices()
         mainHandler.post(updateFaultsTask)
     }
 
@@ -96,33 +91,13 @@ class FaultCodesFragment : Fragment() {
         }
     }
 
-    private fun checkBtDevices() {
-        //Check if the bluetooth adapter is enabled and try to use the device stored in data
-        if (bluetoothAdapter?.isEnabled == true) {
-            try {
-                data = requireArguments()
-                currentDevice = data.get("currentDevice") as BluetoothDevice
-                data.putParcelable("currentDevice", currentDevice)
-            } catch (e: Exception) {
-                Log.e(TAG, "Device not yet set, Falling back to default device", e)
-                //If there is no device in data attempt to use default device
-                try {
-                    val pairedDevices = bluetoothAdapter.bondedDevices
-                    currentDevice = pairedDevices!!.first()
-                } catch (e: Exception) {
-                    //If there is no device found then log the error
-                    Log.e(TAG, "No devices in device list")
-                }
-            }
-        }
-    }
 
     private val updateFaultsTask = object : Runnable {
         override fun run() {
             /*if code is empty then try to perform the command. Stop the handler once the command has run*/
             if (code.isEmpty()) {
                 try {
-                    CommandService().connectToServerFaults(faultCodesViewModel, currentDevice)
+                    CommandService().connectToServerFaults(faultCodesViewModel, DeviceSingleton.bluetoothDevice!!)
                 } catch (e: Exception) {
                     Log.e(TAG, "Error Connecting to Server: ", e)
                 }
