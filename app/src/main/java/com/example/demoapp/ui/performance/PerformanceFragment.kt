@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.performance
 
-import android.bluetooth.BluetoothAdapter
 import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle
@@ -29,7 +28,6 @@ import kotlin.math.roundToInt
 class PerformanceFragment : Fragment() {
     private val performanceViewModel: PerformanceViewModel by viewModels()
     lateinit var mainHandler: Handler
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var firebaseDatabase: FirebaseDatabase
     private var dataRetrieve: Long? = null
     private var currentMPH: Long = 0
@@ -90,7 +88,8 @@ class PerformanceFragment : Fragment() {
         //Current speed value returned from OBD
         val speedObserver = Observer<Int> { currentSpeedFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_CurrentSpeed.text = "$currentSpeedFromOBD MPH"
+            val speedOutput = "$currentSpeedFromOBD MPH"
+            textView_CurrentSpeed.text = speedOutput
             speedometer.speed = currentSpeedFromOBD.toDouble()
             currentMPH = currentSpeedFromOBD.toLong()
         }
@@ -105,7 +104,8 @@ class PerformanceFragment : Fragment() {
         //Current RPM value returned from ODB
         val rpmObserver = Observer<Int> { currentRPMFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_RPM.text = "$currentRPMFromOBD RPM"
+            val rpmOutput = "$currentRPMFromOBD RPM"
+            textView_RPM.text = rpmOutput
             rpmGauge.speed = currentRPMFromOBD.toDouble()
         }
         performanceViewModel.currentRPM.observe(viewLifecycleOwner, rpmObserver)
@@ -119,7 +119,8 @@ class PerformanceFragment : Fragment() {
         //Current Boost Pressure value returned from OBD
         val boostObserver = Observer<Int> { currentBoostFromOBD ->
             // Update the UI, in this case, a TextView.
-            textView_PSI.text = "$currentBoostFromOBD PSI"
+            val boostOutput = "$currentBoostFromOBD PSI"
+            textView_PSI.text = boostOutput
             psiGauge.speed = currentBoostFromOBD.toDouble()
         }
         performanceViewModel.currentBoost.observe(viewLifecycleOwner, boostObserver)
@@ -171,10 +172,11 @@ class PerformanceFragment : Fragment() {
         firebaseDatabase.getReference(uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val dataMap: HashMap<String, Any> = dataSnapshot.value as HashMap<String, Any>
+                    val dataMap = dataSnapshot.value as HashMap<*, *>
                     dataRetrieve = dataMap["maxMPH"] as? Long
                 }
-                textView_MaxSpeed.text = dataRetrieve.toString() + " MPH"
+                val maxSpeedResult = dataRetrieve.toString() + " MPH"
+                textView_MaxSpeed.text = maxSpeedResult
                 storedMaxSpeed = dataRetrieve!!.toLong()
             }
 

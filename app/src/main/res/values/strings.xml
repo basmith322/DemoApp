@@ -21,10 +21,10 @@
     <string name="signOut">Sign Out</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
     <string name="txtSelectDevice">Connect To Device</string>
-    <string name="textSelectDevice">Please select your default OBD Device. If you haven\'t paired the device yet, please do so and run the app again.</string>
     <string name="btnRetry">Retry</string>
     <string name="txtFaultCodes">Fault Codes</string>
     <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>
     <string name="btnFindProtocol">Find Protocol</string>
     <string name="btnCheckFaults">Check For Faults</string>
+    <string name="txtConfirmPass">Confirm Password</string>
 </resources>

@@ -20,7 +20,6 @@ import com.example.demoapp.utilities.DeviceSingleton
 
 class FaultCodesFragment : Fragment() {
     private val faultCodesViewModel: FaultCodesViewModel by viewModels()
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private var db: OBDDataBase? = null
     lateinit var mainHandler: Handler
     private lateinit var lv: ListView

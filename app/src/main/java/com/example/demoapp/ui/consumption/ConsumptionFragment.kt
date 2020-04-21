@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.consumption
 
-import android.bluetooth.BluetoothAdapter
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
@@ -23,8 +22,6 @@ import kotlin.math.roundToInt
 class ConsumptionFragment : Fragment() {
     private val consumptionViewModel: ConsumptionViewModel by viewModels()
     lateinit var mainHandler: Handler
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,20 +56,6 @@ class ConsumptionFragment : Fragment() {
         }
         consumptionViewModel.currentConsumption.observe(viewLifecycleOwner, consumptionObserver)
 
-
-        //Avg Consumption Title
-        val textAvgConsumptionTitle: TextView = root.findViewById(R.id.textView_AvgConsumptionTitle)
-        consumptionViewModel.textAvgConsumptionTitle.observe(viewLifecycleOwner, Observer {
-            textAvgConsumptionTitle.text = it
-        })
-
-        //Avg Consumption value returned from OBD
-        val avgConsumptionObserver = Observer<String> { avgConsumptionFromOBD ->
-            textView_AvgConsumption.text = avgConsumptionFromOBD
-        }
-        consumptionViewModel.avgConsumption.observe(viewLifecycleOwner, avgConsumptionObserver)
-
-
         //Fuel Level Title
         val textFuelLevelTitle: TextView = root.findViewById(R.id.textView_FuelLevelTitle)
         consumptionViewModel.textRangeTitle.observe(viewLifecycleOwner, Observer {
@@ -81,7 +64,8 @@ class ConsumptionFragment : Fragment() {
 
         //Current Fuel Level value returned from OBD
         val fuelLevelObserver = Observer<Float> { currentFuelLevelFromOBD ->
-            textView_FuelLevel.text = currentFuelLevelFromOBD.toInt().toString() + "%"
+            val fuelOutput = currentFuelLevelFromOBD.toInt().toString() + "%"
+            textView_FuelLevel.text = fuelOutput
             fuelGauge.speed = currentFuelLevelFromOBD.toDouble()
         }
         consumptionViewModel.fuelLevel.observe(viewLifecycleOwner, fuelLevelObserver)
@@ -98,7 +82,6 @@ class ConsumptionFragment : Fragment() {
             textView_FuelPressure.text = currentFuelPressureFromOBD
         }
         consumptionViewModel.currentFuelPressure.observe(viewLifecycleOwner, fuelPressureObserver)
-
 
         //Air/Fuel Ratio Title
         val textAirFuelRatioTitle: TextView = root.findViewById(R.id.textView_AirFuelRatioTitle)

@@ -31,8 +31,8 @@ class ProtocolFragment : Fragment() {
     private lateinit var btnFindProtocol: Button
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var progressBar: ProgressBar
-    lateinit var mainHandler: Handler
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var mainHandler: Handler
+    private lateinit var sharedPref: SharedPreferences
 
     companion object {
         fun newInstance() = ProtocolFragment()
@@ -92,10 +92,10 @@ class ProtocolFragment : Fragment() {
         )
         alert.setButton(
             Dialog.BUTTON_POSITIVE,
-            "Continue",
-            { dialog, which ->
-                alert.dismiss()
-            })
+            "Continue"
+        ) { dialog, which ->
+            alert.dismiss()
+        }
         alert.show()
 
         val spinner: Spinner = root.findViewById(R.id.spnSelectDevice)

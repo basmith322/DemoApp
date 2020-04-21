@@ -34,12 +34,11 @@ class BluetoothSettingsFragment : Fragment() {
     private lateinit var viewModel: BluetoothSettingsViewModel
     private lateinit var spinner: Spinner
     private lateinit var mainHandler: Handler
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
-
     }
 
     override fun onCreateView(

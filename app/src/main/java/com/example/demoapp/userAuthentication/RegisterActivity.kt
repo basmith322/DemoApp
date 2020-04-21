@@ -30,12 +30,19 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     //Perform validation check if there are email and password strings. Email and Password formatting are handled by Firebase.
-    private fun getRegisterValidationError(email: String, password: String): String? {
+    fun getRegisterValidationError(
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): String? {
         if (email == "") {
             return "Please enter a valid email address"
         }
         if (password == "") {
             return "Please enter a valid password"
+        }
+        if (confirmPassword != password) {
+            return "Passwords do not match, please try again"
         }
         return null
     }
@@ -44,7 +51,8 @@ class RegisterActivity : AppCompatActivity() {
         //Obtain email and password from text fields and pass them to validation check function
         val email = findViewById<EditText>(R.id.editTextRegEmail).text.toString()
         val password = findViewById<EditText>(R.id.editTextRegPassword).text.toString()
-        val validationError = getRegisterValidationError(email, password)
+        val confirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword).text.toString()
+        val validationError = getRegisterValidationError(email, password, confirmPassword)
 
         //Only allow the user to continue if the values pass validation check.
         if (validationError != null) {
@@ -61,12 +69,20 @@ class RegisterActivity : AppCompatActivity() {
                 //checking if successful
                 if (task.isSuccessful) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this@RegisterActivity, "Registration Successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Registration Successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
                     finish()
                 } else {
                     val e = task.exception as FirebaseAuthException
-                    Toast.makeText(this@RegisterActivity, "Registration Failed: " + e.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Registration Failed: " + e.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }

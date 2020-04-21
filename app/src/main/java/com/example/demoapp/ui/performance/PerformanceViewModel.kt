@@ -60,8 +60,4 @@ class PerformanceViewModel : ViewModel() {
     }
     val textMaxSpeedTitle: LiveData<String> = _textMaxSpeedTitle
 
-    private val _textMaxSpeed = MutableLiveData<String>().apply {
-        value = randomMaxSpeed.toString() + "Mph"
-    }
-
 }
