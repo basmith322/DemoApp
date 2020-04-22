@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -27,13 +28,13 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        val navController = navHostFragment!!.findNavController()
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_Perf,
                 R.id.navigation_Temps,
                 R.id.navigation_Fuel,
-                R.id.navigation_Bluetooth,
                 R.id.navigation_Faults
             ), drawerLayout
         )

@@ -4,7 +4,7 @@
     <string name="title_Temps">Temperatures</string>
     <string name="title_Fuel">Consumption</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="nav_header_title">Digital Car Dashboard</string>
+    <string name="nav_header_title">DigiDash</string>
     <string name="nav_header_subtitle">smith-b9@ulster.ac.uk</string>
     <string name="imgSpeedometer">Speedometer</string>
     <string name="title_bluetooth">Bluetooth</string>
@@ -20,7 +20,7 @@
     <string name="txtNoNetwork">There is currently no network connection. Please turn on WiFi or Mobile Data and tap retry to try again.</string>
     <string name="signOut">Sign Out</string>
     <string name="txtDeviceList">Please select the correct ODB device from the list</string>
-    <string name="txtSelectDevice">Connect To Device</string>
+    <string name="btnConnect">Connect To Device</string>
     <string name="btnRetry">Retry</string>
     <string name="txtFaultCodes">Fault Codes</string>
     <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>

@@ -177,7 +177,12 @@ class PerformanceFragment : Fragment() {
                 }
                 val maxSpeedResult = dataRetrieve.toString() + " MPH"
                 textView_MaxSpeed.text = maxSpeedResult
-                storedMaxSpeed = dataRetrieve!!.toLong()
+                try {
+                    storedMaxSpeed = dataRetrieve!!.toLong()
+                } catch (e: Exception){
+                    Log.e(TAG, "No data returned", e)
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {

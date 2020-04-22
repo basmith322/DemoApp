@@ -11,7 +11,7 @@ import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.ui.setup.ui.ProtocolActivity
 import kotlin.system.exitProcess
 
-class BluetoothSetupActivity : AppCompatActivity() {
+class BluetoothSetupActivity() : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +42,8 @@ class BluetoothSetupActivity : AppCompatActivity() {
             //If it is not enabled, bring up the alert to ask the user to enable BT or exit
         } else {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("DigiDash Setup")
-            builder.setMessage("Welcome to DigiDash.\nThis app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
+            builder.setTitle("Enable Bluetooth")
+            builder.setMessage("This app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
             builder.setPositiveButton("Continue") { dialog, which ->
                 startBluetooth()
             }

@@ -20,11 +20,10 @@ import com.google.firebase.auth.FirebaseAuthException
 class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressBar: ProgressBar
-    private var backPressed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_login)
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -58,9 +57,11 @@ class LoginActivity : AppCompatActivity() {
     //Perform validation check if there are email and password strings. Email and Password formatting are handled by Firebase.
     fun getLoginValidationError(email: String, password: String): String? {
         if (email == "") {
+            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid email address"
         }
         if (password == "") {
+            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid password"
         }
         return null
@@ -105,7 +106,6 @@ class LoginActivity : AppCompatActivity() {
 
     fun goRegister(view: View) {
         startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-        finish()
     }
 
     //Again check if there is network connection.
@@ -124,19 +124,5 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this@LoginActivity, NoNetwork::class.java))
             finish()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        finishAffinity()
-    }
-
-    override fun onBackPressed() {
-        if (backPressed) {
-            super.onBackPressed()
-            return
-        }
-        Toast.makeText(this, "Press Back again to close the app", Toast.LENGTH_LONG).show()
-        backPressed = true
     }
 }

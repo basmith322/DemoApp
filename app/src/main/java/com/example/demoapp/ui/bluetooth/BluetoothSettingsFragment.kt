@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,6 +23,7 @@ import com.example.demoapp.ui.performance.PerformanceFragment
 import com.example.demoapp.utilities.CommandService
 import com.example.demoapp.utilities.DeviceSingleton
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.system.exitProcess
 
 const val REQUEST_ENABLE_BT = 1
 
@@ -39,6 +41,16 @@ class BluetoothSettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = requireContext().getSharedPreferences("storedPrefs", Context.MODE_PRIVATE)
+
+        //show a toast notification if the device does not support bluetooth
+        if (bluetoothAdapter?.isEnabled != true) {
+            showAlert()
+        }
+        //If there is no Bluetooth Adapter then do not show prompt and inform user the device does not support BT
+        if (bluetoothAdapter == null) {
+            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
     override fun onCreateView(
@@ -58,16 +70,6 @@ class BluetoothSettingsFragment : Fragment() {
         spinner = root.findViewById(R.id.spnDevices)
         pairedDevices(spinner)
 
-        //show a toast notification if the device does not support bluetooth
-        if (bluetoothAdapter == null) {
-            Toast.makeText(context, "This device does not support bluetooth", Toast.LENGTH_LONG)
-                .show()
-        }
-
-        //if the device supports bluetooth but adapter is not enabled, request it to be enabled
-        if (bluetoothAdapter?.isEnabled == false) {
-            enableBT()
-        }
 
         //Observer to monitor the value returned from the OBD for protocol
         val protocolObserver = Observer<String> { currentProtocolFromOBD ->
@@ -89,11 +91,38 @@ class BluetoothSettingsFragment : Fragment() {
 
                 fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, perfFragment)
                     .commit()
-                fragmentManager.beginTransaction().remove(this)
             }
         }
         bluetoothSettingsViewModel.returnedProtocol.observe(viewLifecycleOwner, protocolObserver)
         return root
+    }
+
+    private fun showAlert() {
+        //If BT is already enabled, don't prompt the user
+        Thread.sleep(100)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Enable Bluetooth")
+        builder.setMessage("This app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
+        builder.setPositiveButton("Continue") { dialog, which ->
+            startBluetooth()
+        }
+        builder.setNegativeButton("Exit") { dialog, which ->
+            exitProcess(0)
+        }
+        if (bluetoothAdapter?.isEnabled != true) {
+            builder.show()
+        }
+    }
+
+    private fun startBluetooth() {
+        //if the device supports bluetooth but adapter is not enabled, request it to be enabled
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(
+                enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
+        }
     }
 
     private fun tryConnect() {
@@ -161,16 +190,6 @@ class BluetoothSettingsFragment : Fragment() {
         }
     }
 
-    private fun enableBT() {
-        if (bluetoothAdapter?.isEnabled == false) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(
-                enableBtIntent,
-                REQUEST_ENABLE_BT
-            )
-        }
-    }
-
     override fun onPause() {
         mainHandler.removeCallbacksAndMessages(null)
         progressBar.visibility = View.INVISIBLE
@@ -189,5 +208,9 @@ class BluetoothSettingsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(bluetoothSettingsViewModel::class.java)
     }
 
+    override fun onResume() {
+        super.onResume()
+        showAlert()
+    }
 
 }
