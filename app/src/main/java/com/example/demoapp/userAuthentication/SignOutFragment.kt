@@ -31,6 +31,7 @@ class SignOutFragment : Fragment() {
         startActivity(Intent(context, LoginActivity::class.java))
         val fragmentManager = parentFragmentManager
         fragmentManager.beginTransaction().remove(this)
+        activity?.finish()
         return root
     }
 

@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.setup
 
 import android.bluetooth.BluetoothAdapter
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -13,6 +14,9 @@ import kotlin.system.exitProcess
 
 class BluetoothSetupActivity() : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private lateinit var builder: AlertDialog.Builder
+    private lateinit var alert: AlertDialog
+    private var backPressed: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,13 +24,6 @@ class BluetoothSetupActivity() : AppCompatActivity() {
 
         //If BT is already enabled, don't prompt the user
         setTheme(R.style.AppTheme)
-        if (bluetoothAdapter?.isEnabled == true) {
-            startActivity(Intent(this, ProtocolActivity::class.java))
-            finish()
-            //If it is not enabled, bring up the alert to ask the user to enable BT or exit
-        } else {
-            showAlert()
-        }
         //If there is no Bluetooth Adapter then do not show prompt and inform user the device does not support BT
         if (bluetoothAdapter == null) {
             Toast.makeText(this, "This device does not support bluetooth", Toast.LENGTH_LONG)
@@ -36,21 +33,30 @@ class BluetoothSetupActivity() : AppCompatActivity() {
 
     private fun showAlert() {
         //If BT is already enabled, don't prompt the user
-        if (bluetoothAdapter?.isEnabled == true) {
-            startActivity(Intent(this, ProtocolActivity::class.java))
+        builder = AlertDialog.Builder(this)
+        alert = builder.create()
+        alert.setTitle("Enable Bluetooth")
+        alert.setMessage("This app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
+        alert.setButton(
+            DialogInterface.BUTTON_POSITIVE,
+            "Continue"
+        ) { dialogInterface: DialogInterface, i: Int ->
+            startBluetooth()
+        }
+        alert.setButton(
+            DialogInterface.BUTTON_NEGATIVE,
+            "Exit"
+        ) { dialogInterface: DialogInterface, i: Int ->
+            exitProcess(0)
+        }
+        alert.setOnCancelListener {
+            alert.cancel()
             finish()
-            //If it is not enabled, bring up the alert to ask the user to enable BT or exit
+        }
+        if (bluetoothAdapter?.isEnabled == false) {
+            alert.show()
         } else {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Enable Bluetooth")
-            builder.setMessage("This app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
-            builder.setPositiveButton("Continue") { dialog, which ->
-                startBluetooth()
-            }
-            builder.setNegativeButton("Exit") { dialog, which ->
-                exitProcess(0)
-            }
-            builder.show()
+            alert.cancel()
         }
     }
 
@@ -67,6 +73,13 @@ class BluetoothSetupActivity() : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (bluetoothAdapter?.isEnabled == true) {
+            startActivity(Intent(this, ProtocolActivity::class.java))
+            finish()
+            //If it is not enabled, bring up the alert to ask the user to enable BT or exit
+        } else {
+            showAlert()
+        }
         showAlert()
     }
 }
