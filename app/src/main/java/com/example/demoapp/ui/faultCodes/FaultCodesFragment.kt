@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.faultCodes
 
-import android.bluetooth.BluetoothAdapter
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
@@ -22,10 +21,11 @@ class FaultCodesFragment : Fragment() {
     private val faultCodesViewModel: FaultCodesViewModel by viewModels()
     private var db: OBDDataBase? = null
     lateinit var mainHandler: Handler
-    private lateinit var lv: ListView
+    private lateinit var listViewCodes: ListView
     private lateinit var codeDescriptions: MutableList<String>
     private var code: Array<String> = arrayOf()
-    private lateinit var btn: Button
+    private lateinit var btnFaultCodes: Button
+    private lateinit var btnClearFaults: Button
     private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,11 +40,13 @@ class FaultCodesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_faults, container, false)
 
         //Initialize view elements to variables
-        btn = root.findViewById(R.id.button_checkFaults)
-        btn.setOnClickListener { checkFaultCodes() }
+        btnFaultCodes = root.findViewById(R.id.button_checkFaults)
+        btnClearFaults = root.findViewById(R.id.button_clearFaults)
+        btnClearFaults.setOnClickListener { clearFaultCodes() }
+        btnFaultCodes.setOnClickListener { checkFaultCodes() }
         progressBar = root.findViewById(R.id.progressBar_Faults)
         progressBar.visibility = View.INVISIBLE
-        lv = root.findViewById(R.id.listView_Codes)
+        listViewCodes = root.findViewById(R.id.listView_Codes)
 
         //Observer to monitor the value returned from the OBD for protocol
         val faultObserver = Observer<Array<String>> { currentFaultFromOBD ->
@@ -54,6 +56,14 @@ class FaultCodesFragment : Fragment() {
         faultCodesViewModel.faultCode.observe(viewLifecycleOwner, faultObserver)
 
         return root
+    }
+
+    private fun clearFaultCodes() {
+        //Send command to the OBD device to clear fault codes, to be used on button press
+        CommandService().connectToClearFaults(
+            faultCodesViewModel,
+            DeviceSingleton.bluetoothDevice!!
+        )
     }
 
     override fun onPause() {
@@ -79,7 +89,7 @@ class FaultCodesFragment : Fragment() {
                     android.R.layout.simple_list_item_1,
                     codeDescriptions
                 )
-                lv.adapter = adapter
+                listViewCodes.adapter = adapter
             } catch (e: Exception) {
                 Log.e(TAG, "Could not contact db", e)
             }
@@ -93,10 +103,14 @@ class FaultCodesFragment : Fragment() {
 
     private val updateFaultsTask = object : Runnable {
         override fun run() {
-            /*if code is empty then try to perform the command. Stop the handler once the command has run*/
+            /**if code is empty then try to perform the command every 2 seconds.
+             * Stop the handler once the command has run*/
             if (code.isEmpty()) {
                 try {
-                    CommandService().connectToServerFaults(faultCodesViewModel, DeviceSingleton.bluetoothDevice!!)
+                    CommandService().connectToServerFaults(
+                        faultCodesViewModel,
+                        DeviceSingleton.bluetoothDevice!!
+                    )
                 } catch (e: Exception) {
                     Log.e(TAG, "Error Connecting to Server: ", e)
                 }

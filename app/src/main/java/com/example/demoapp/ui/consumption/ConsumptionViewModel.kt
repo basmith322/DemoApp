@@ -5,21 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ConsumptionViewModel : ViewModel() {
+    /**Mutable properties that can be changed. Titles are static but values are set to returned
+     * values from OBD commands */
     private val _textCurrentConsumptionTitle = MutableLiveData<String>().apply {
         value = "Current Consumption"
     }
     val textCurrentSpeedTitle: LiveData<String> = _textCurrentConsumptionTitle
 
     val currentConsumption by lazy {
-        MutableLiveData<String>()
-    }
-
-    private val _textAvgConsumptionTitle = MutableLiveData<String>().apply {
-        value = "Avg Consumption"
-    }
-    val textAvgConsumptionTitle: LiveData<String> = _textAvgConsumptionTitle
-
-    val avgConsumption by lazy {
         MutableLiveData<String>()
     }
 
@@ -49,14 +42,4 @@ class ConsumptionViewModel : ViewModel() {
     val currentAirFuelRatio by lazy {
         MutableLiveData<String>()
     }
-
-//    private val _textFuelPressureTitle = MutableLiveData<String>().apply {
-//        value = "Fuel Pressure"
-//    }
-//    val textFuelPressureTitle: LiveData<String> = _textFuelPressureTitle
-//
-//    val currentFuelPressure by lazy {
-//        MutableLiveData<String>()
-//    }
-
 }

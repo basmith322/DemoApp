@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class TemperaturesViewModel : ViewModel() {
-
+    /**Mutable properties that can be changed. Titles are static but values are set to returned
+     * values from OBD commands */
     //Current Coolant Temp Title
     private val _textCoolantTempTitle = MutableLiveData<String>().apply {
         value = "Coolant Temp"
@@ -16,7 +17,6 @@ class TemperaturesViewModel : ViewModel() {
     val coolantTemp by lazy {
         MutableLiveData<Float>()
     }
-
 
     //Current Air Intake Temp Title
     private val _textAirIntakeTempTitle = MutableLiveData<String>().apply {
@@ -29,7 +29,6 @@ class TemperaturesViewModel : ViewModel() {
         MutableLiveData<Float>()
     }
 
-
     //Current Ambient Air Temp Title
     private val _textAmbientAirTempTitle = MutableLiveData<String>().apply {
         value = "Ambient Air Temp"
@@ -40,7 +39,6 @@ class TemperaturesViewModel : ViewModel() {
     val ambientAirTemp by lazy {
         MutableLiveData<Float>()
     }
-
 
     //Current Oil Temp title
     private val _textOilTempTitle = MutableLiveData<String>().apply {

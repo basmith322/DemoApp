@@ -11,6 +11,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+
+/**An abstract command sender to provide a template for the other command senders to use
+* Takes in parameters for BluetoothDevice to use for the socket commands and a view model to return
+* values to*/
 abstract class AbstractCommandSender<T : ViewModel>
     (
     device: BluetoothDevice,
@@ -24,6 +28,7 @@ abstract class AbstractCommandSender<T : ViewModel>
         device.createRfcommSocketToServiceRecord(MY_UUID)
     }
 
+    //run socket command in separate thread as blocking calls will stop main thread if called there
     override fun run() {
         Log.d(ContentValues.TAG, "ConnectThread: started.")
         bluetoothAdapter?.cancelDiscovery()
@@ -44,13 +49,16 @@ abstract class AbstractCommandSender<T : ViewModel>
     }
 
     private fun manageMyConnectedSocket(mmSocket: BluetoothSocket) {
+        //Set up input and output streams, performs the command using the input and output streams
         input = mmSocket.inputStream
         output = mmSocket.outputStream
         performCommand(input, output)
     }
 
+    //Abstract performance command to be implemented by classes that extend this class
     protected abstract fun performCommand(inputStream: InputStream, outputStream: OutputStream)
 
+    //Cancel command called in the event of issue
     private fun cancel() {
         try {
             Log.d(ContentValues.TAG, "cancel: Closing Client Socket")

@@ -6,7 +6,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_header_title">DigiDash</string>
     <string name="nav_header_subtitle">smith-b9@ulster.ac.uk</string>
-    <string name="imgSpeedometer">Speedometer</string>
     <string name="title_bluetooth">Bluetooth</string>
     <string name="extras">Extras</string>
     <string name="txtRegister">Welcome. Please Register to Continue</string>
@@ -24,7 +23,7 @@
     <string name="btnRetry">Retry</string>
     <string name="txtFaultCodes">Fault Codes</string>
     <string name="txtSelectDeviceProtocol">Please Select your OBD device from the list</string>
-    <string name="btnFindProtocol">Find Protocol</string>
     <string name="btnCheckFaults">Check For Faults</string>
     <string name="txtConfirmPass">Confirm Password</string>
+    <string name="btnClearFaults">Clear Fault Codes</string>
 </resources>

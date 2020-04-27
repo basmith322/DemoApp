@@ -12,11 +12,10 @@ import com.example.demoapp.ui.bluetooth.REQUEST_ENABLE_BT
 import com.example.demoapp.ui.setup.ui.ProtocolActivity
 import kotlin.system.exitProcess
 
-class BluetoothSetupActivity() : AppCompatActivity() {
+class BluetoothSetupActivity : AppCompatActivity() {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var builder: AlertDialog.Builder
     private lateinit var alert: AlertDialog
-    private var backPressed: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +31,6 @@ class BluetoothSetupActivity() : AppCompatActivity() {
     }
 
     private fun showAlert() {
-        //If BT is already enabled, don't prompt the user
         builder = AlertDialog.Builder(this)
         alert = builder.create()
         alert.setTitle("Enable Bluetooth")

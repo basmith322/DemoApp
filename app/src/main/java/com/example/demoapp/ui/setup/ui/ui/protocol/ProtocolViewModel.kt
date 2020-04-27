@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.github.pires.obd.enums.ObdProtocols
 
 class ProtocolViewModel : ViewModel() {
+    //mutable property to hold the returned protocol from the OBD system
     val returnedProtocol by lazy {
         MutableLiveData<String>()
     }

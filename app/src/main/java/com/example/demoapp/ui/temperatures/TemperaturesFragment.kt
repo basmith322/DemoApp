@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.temperatures
 
-import android.bluetooth.BluetoothAdapter
 import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.os.Bundle

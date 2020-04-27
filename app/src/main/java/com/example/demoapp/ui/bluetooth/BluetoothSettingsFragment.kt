@@ -60,7 +60,7 @@ class BluetoothSettingsFragment : Fragment() {
         val root = inflater.inflate(R.layout.bluetooth_settings_fragment, container, false)
         mainHandler = Handler(Looper.getMainLooper())
 
-        //Initialize view elements to variables
+        //Initialize view elements to variables and set functions
         progressBar = root.findViewById(R.id.progressBar_BTSettings)
         progressBar.visibility = View.INVISIBLE
         navBar = requireActivity().findViewById(R.id.bottom_nav_view)
@@ -98,8 +98,7 @@ class BluetoothSettingsFragment : Fragment() {
     }
 
     private fun showAlert() {
-        //If BT is already enabled, don't prompt the user
-        Thread.sleep(100)
+        //Use an alert dialog to inform the user they must enable bluetooth
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Enable Bluetooth")
         builder.setMessage("This app requires a Bluetooth connection to function.\nPlease allow the Bluetooth Permission to continue.")
@@ -126,7 +125,7 @@ class BluetoothSettingsFragment : Fragment() {
     }
 
     private fun tryConnect() {
-        //Try the connection until successful
+        //Try to connect to the bluetooth device for 10 seconds
         progressBar.visibility = View.VISIBLE
         try {
             CommandService().connectToServerBTSettings(
@@ -151,8 +150,9 @@ class BluetoothSettingsFragment : Fragment() {
     }
 
     private fun pairedDevices(spinner: Spinner) {
-        val pairedList = bluetoothAdapter?.bondedDevices!!
-        val deviceList = ArrayList<String>()
+        val pairedList = bluetoothAdapter?.bondedDevices!! //Create a list of paired devices
+        val deviceList = ArrayList<String>() //ArrayList of strings to show in the spinner
+        //For each device in the pairedList, add the device name to the deviceList
         pairedList.forEach { device ->
             deviceList.add(device.name)
 
@@ -163,6 +163,7 @@ class BluetoothSettingsFragment : Fragment() {
             )
             spinner.adapter = adapter
 
+            //If no device is selected then set the first device in the list as the bluetoothDevice
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     Log.e("MainActivity", "" + pairedList.size)
@@ -173,6 +174,7 @@ class BluetoothSettingsFragment : Fragment() {
                     }
                 }
 
+                //When an device is selected, set the device as the bluetoothDevice
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
                     view: View?,
@@ -191,12 +193,14 @@ class BluetoothSettingsFragment : Fragment() {
     }
 
     override fun onPause() {
+        //Stop the handler to prevent it calling repeatedly when not needed
         mainHandler.removeCallbacksAndMessages(null)
         progressBar.visibility = View.INVISIBLE
         super.onPause()
     }
 
     override fun onDestroyView() {
+        //Stop the handler to prevent it calling repeatedly when not needed
         mainHandler.removeCallbacksAndMessages(null)
         navBar.visibility = View.VISIBLE
         btnPair.visibility = View.INVISIBLE
@@ -210,6 +214,7 @@ class BluetoothSettingsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        //Show alert dialog when the app resumes to ensure app doesn't display blank screen
         showAlert()
     }
 

@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PerformanceViewModel : ViewModel() {
-
     private val randomMph = (0..130).random()
-    private val randomMaxSpeed = (60..200).random()
 
-
+    /**Mutable properties that can be changed. Titles are static but values are set to returned
+     * values from OBD commands */
     //Current Speed Title
     private val _textCurrentSpeedTitle:MutableLiveData<String> = MutableLiveData<String>().apply {
         value = "Current Speed"

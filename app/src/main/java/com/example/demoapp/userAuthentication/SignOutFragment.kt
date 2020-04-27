@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.demoapp.R
 import com.google.firebase.auth.FirebaseAuth
 
-
+/**This fragment is a blank fragment that is used with the sidebar menu to provide a user an option
+ * to sign out from the firebase system */
 class SignOutFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var signOutViewModel: SignOutViewModel

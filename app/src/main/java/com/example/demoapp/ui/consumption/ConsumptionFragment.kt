@@ -35,6 +35,7 @@ class ConsumptionFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_consumption, container, false)
 
+        //create a gauge to indicate fuel level
         val fuelGauge: SpeedometerGauge
         fuelGauge = root.findViewById(R.id.fuelLevel)
         fuelGauge.labelConverter =
@@ -98,6 +99,7 @@ class ConsumptionFragment : Fragment() {
         return root
     }
 
+    //Runnable object that will activate every 2 seconds to send commands to the OBD device
     private val updateConsumptionTask = object : Runnable {
         override fun run() {
             try {
@@ -111,11 +113,13 @@ class ConsumptionFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        //Stop the handler to prevent it calling repeatedly when not needed
         mainHandler.removeCallbacks(updateConsumptionTask)
     }
 
     override fun onResume() {
         super.onResume()
+        //Stop the handler to prevent it calling repeatedly when not needed
         mainHandler.post(updateConsumptionTask)
     }
 }

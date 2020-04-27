@@ -36,7 +36,7 @@ class LoginActivityTest {
         assertNotNull(result)
     }
 
-    //Test if there is both an emal and a password
+    //Test if there is both an email and a password
     @Test
     fun validateEmailAndPassword() {
         val email = "test1@email.com"
