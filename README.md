@@ -4,5 +4,4 @@ This app also uses the Android Widgets library developed by ntoskrnl https://git
 Additionally this app uses SQLite Asset Helper to help with SQLite database management and query building. https://github.com/jgilfelt/android-sqlite-asset-helper
 The database of OBD codes was created by mytrile and is located at https://github.com/mytrile/obd-trouble-codes.
 
-#License
 This application is free to use and all rights for any libraries or software used belong to the developers or IP owners of said libraries or software.
