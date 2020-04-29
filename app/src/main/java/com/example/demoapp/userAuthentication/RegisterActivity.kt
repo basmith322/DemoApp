@@ -61,18 +61,17 @@ class RegisterActivity : AppCompatActivity() {
         confirmPassword: String
     ): String? {
         if (email == "") {
-            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid email address"
         }
         if (password == "") {
-            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid password"
         }
         if (confirmPassword != password) {
-            progressBar.visibility = View.INVISIBLE
             return "Passwords do not match, please try again"
         }
+//        progressBar.visibility = View.INVISIBLE
         return null
+
     }
 
     fun registerUser(view: View) {
@@ -110,6 +109,7 @@ class RegisterActivity : AppCompatActivity() {
                         this@RegisterActivity,
                         "Registration Failed: " + e.message,
                         Toast.LENGTH_SHORT
+
                     ).show()
                     progressBar.visibility = View.INVISIBLE
                 }

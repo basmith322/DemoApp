@@ -57,13 +57,12 @@ class LoginActivity : AppCompatActivity() {
     //Perform validation check if there are email and password strings. Email and Password formatting are handled by Firebase.
     fun getLoginValidationError(email: String, password: String): String? {
         if (email == "") {
-            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid email address"
         }
         if (password == "") {
-            progressBar.visibility = View.INVISIBLE
             return "Please enter a valid password"
         }
+//        progressBar.visibility = View.INVISIBLE
         return null
     }
 
