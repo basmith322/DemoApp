@@ -41,7 +41,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.cardiomood.android:android-widgets:0.1.1'
-    implementation 'com.github.anastr:speedviewlib:1.5.2'
     implementation 'com.github.pires:obd-java-api:1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'

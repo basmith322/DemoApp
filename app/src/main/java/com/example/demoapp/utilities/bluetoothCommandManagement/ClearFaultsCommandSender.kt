@@ -12,7 +12,7 @@ class ClearFaultsCommandSender(device: BluetoothDevice, providedViewModel: Fault
     AbstractCommandSender<FaultCodesViewModel>(device, providedViewModel) {
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
         //Short timeout command to ensure the OBD device is finished with any previous commands
-        val timeoutCommand = TimeoutCommand(62)
+        val timeoutCommand = TimeoutCommand(255)
         timeoutCommand.run(inputStream, outputStream)
 
         val clearFaultsCommand = ResetTroubleCodesCommand()

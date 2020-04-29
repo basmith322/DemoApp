@@ -16,7 +16,7 @@ class PerformanceCommandSender(device: BluetoothDevice, providedViewModel: Perfo
 
     override fun performCommand(inputStream: InputStream, outputStream: OutputStream) {
         //Short timeout command to ensure the OBD device is finished with any previous commands
-        val timeoutCommand = TimeoutCommand(62)
+        val timeoutCommand = TimeoutCommand(255)
         timeoutCommand.run(inputStream, outputStream)
 
         //Creating and running commands, storing the results in variables to be passed to view model
