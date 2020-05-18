@@ -12,3 +12,5 @@ This application uses SQLite Asset Helper to help with SQLite database managemen
 This application uses a database of OBD fault codes provided by mytrile. https://github.com/mytrile/obd-trouble-codes.
 
 This application is free to use and all rights for any libraries or software used belong to the developers or IP owners of said libraries or software.
+
+The application was written primarily in Kotlin and used Android Studio for the IDE.
