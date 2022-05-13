@@ -1,7 +1,7 @@
 # DigiDash
 The following is an application that connects to an OBD interface device within a vehicle and sends/recieves data to and from said device.
 
-This application should be used with care and the developer will not be held accountable in any such event where the application causes damage to a smartphone, OBD interface device or vehicle.
+This application should be used with care and the developer will not be held accountable in any such event where the application causes damage to a smartphone, OBD interface device, or vehicle.
 
 This application uses Pires OBD API Library to handle the sending of commands to and from the OBD interface device. https://github.com/pires/obd-java-api
 
